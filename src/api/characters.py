@@ -31,7 +31,7 @@ def get_character(id: str):
     for character in db.characters:
         if character["character_id"] == id:
             character = character["character_id"]
-            json = character["character_id"]
+            json = character
 
     if json is None:
         raise HTTPException(status_code=404, detail="movie not found.")
