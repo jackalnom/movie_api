@@ -6,26 +6,26 @@ import csv
 
 print("reading movies")
 
+def create_dict_a(id_name, file):
+    csv_reader = csv.DictReader(file, skipinitialspace=True)
+    return { row[id_name]: row for row in csv_reader}
+
+def create_dict_b(id_name, file):
+    out = {}
+    reader = csv.DictReader(file)
+    for row in reader:
+        id = row.pop(id_name)
+        out[id] = row
+    return out 
+
 with open("movies.csv", mode="r", encoding="utf8") as csv_file:
-    movies = [
-        {k: v for k, v in row.items()}
-        for row in csv.DictReader(csv_file, skipinitialspace=True)
-    ]
+    movies = create_dict_b("movie_id", csv_file)
 
 with open("characters.csv", mode="r", encoding="utf8") as csv_file:
-    characters = [
-        {k: v for k, v in row.items()}
-        for row in csv.DictReader(csv_file, skipinitialspace=True)
-    ]
+    characters = create_dict_b("character_id", csv_file)
 
 with open("conversations.csv", mode="r", encoding="utf8") as csv_file:
-    conversations = [
-        {k: v for k, v in row.items()}
-        for row in csv.DictReader(csv_file, skipinitialspace=True)
-    ]
+    conversations = create_dict_b("conversation_id", csv_file)
 
 with open("lines.csv", mode="r", encoding="utf8") as csv_file:
-    lines = [
-        {k: v for k, v in row.items()}
-        for row in csv.DictReader(csv_file, skipinitialspace=True)
-    ]
+    lines = create_dict_b("line_id", csv_file)
