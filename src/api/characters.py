@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from enum import Enum
 from src import database as db
+import json
 
 router = APIRouter()
 
@@ -26,16 +27,17 @@ def get_character(id: str):
     * `number_of_lines_together`: The number of lines the character has with the
       originally queried character.
     """
+    json_return = None
+
     for character in db.characters:
         if character["character_id"] == id:
             print("character found")
+            json_return = json.dumps(character)
 
-    json = None
-
-    if json is None:
+    if json_return is None:
         raise HTTPException(status_code=404, detail="movie not found.")
 
-    return json
+    return json_return
 
 
 class character_sort_options(str, Enum):
