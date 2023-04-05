@@ -1,8 +1,16 @@
 from fastapi import APIRouter, HTTPException
 from enum import Enum
 from src import database as db
+from collections import Counter
 
 router = APIRouter()
+
+
+
+def unique_integers_sorted(arr):
+    count = Counter(arr)
+    sorted_ints = [x[0] for x in count.most_common()]
+    return sorted_ints
 
 
 @router.get("/characters/{id}", tags=["characters"])
@@ -27,17 +35,25 @@ def get_character(id: str):
       originally queried character.
     """
     json = None
+    character = db.characters[id]
+    print(character)
 
-    for character in db.characters:
-        if character["character_id"] == id:
-            character = character["character_id"]
-            json = character
+    convo_chars = []
+    for line_id, line in db.lines.items():
+        if line['character_id'] == id:
+            # print(line)
+            # print()
 
-    if json is None:
-        raise HTTPException(status_code=404, detail="movie not found.")
+            convo_id = line["conversation_id"]
+            convo = db.conversations[convo_id]
 
-    return json
-
+            if id == convo["character1_id"]:
+                convo_chars.append(int(convo["character2_id"]))
+            if id == convo["character2_id"]:
+                convo_chars.append(int(convo["character1_id"]))
+    convo_chars_sorted = unique_integers_sorted(convo_chars)
+    print(convo_chars_sorted)
+    return 
 
 class character_sort_options(str, Enum):
     character = "character"
