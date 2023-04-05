@@ -32,7 +32,7 @@ def get_character(id: str):
             print("character found")
             json = character
             id = json["character_id"]
-            #json["top_conversations"] = []
+            json["top_conversations"] = []
             #for convo in db.conversations:
             #  if (id == convo["character1_id"]) or (json["character2_id"]):
             #    json["top_conversations"].append(convo)
