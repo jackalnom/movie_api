@@ -33,10 +33,14 @@ def get_character(id: str):
             json = character
             id = json["character_id"]
             json["top_conversations"] = []
+            # need to create the top conversations dictionary before returning the entire json object.
+            # make sure you install uvicorn before next class just to make sure everything is running smoothly.
             for convo in db.conversations:
               if id == convo["character1_id"]:
                 json["top_conversations"].append(convo)
 
+
+    
     if json is None:
         raise HTTPException(status_code=404, detail="movie not found.")
     return json
