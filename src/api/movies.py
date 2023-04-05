@@ -71,7 +71,7 @@ def list_movies(
     maximum number of results to return. The `offset` query parameter specifies the
     number of results to skip before returning results.
     """
-    int cnt = 0
+    int cnt
     for movie in db.movies:
         while(cnt < limit)
             cnt += cnt
