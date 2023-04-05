@@ -34,13 +34,12 @@ def get_character(id: str):
             id = json["character_id"]
             json["top_conversations"] = []
             for convo in db.conversations:
-              if id == convo["character_id"]:
+              if id == convo["character1_id"]:
                 json["top_conversations"].append(convo)
 
-    
     if json is None:
         raise HTTPException(status_code=404, detail="movie not found.")
-    return db.conversations
+    return json
 
 
 class character_sort_options(str, Enum):
