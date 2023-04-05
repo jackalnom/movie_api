@@ -32,10 +32,10 @@ def get_character(id: str):
             print("character found")
             json = character
             id = json["character_id"]
-            json["top_conversations"] = []
-            for convo in db.conversations:
-              if (id == convo["character1_id"]) or (json["character2_id"]):
-                json["top_conversations"].append(convo)
+            #json["top_conversations"] = []
+            #for convo in db.conversations:
+            #  if (id == convo["character1_id"]) or (json["character2_id"]):
+            #    json["top_conversations"].append(convo)
             
     if json is None:
         raise HTTPException(status_code=404, detail="movie not found.")
