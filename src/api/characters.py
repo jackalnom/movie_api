@@ -26,9 +26,21 @@ def get_character(id: str):
     * `number_of_lines_together`: The number of lines the character has with the
       originally queried character.
     """
+
+
     for character in db.characters:
-        if character["character_id"] == id:
-           json = character
+        if character["character_id"] == id:  
+           for conversation in db.conversations.filter(i,n){
+                   return n.character1_id == id or n.character2_id == id
+           }:
+               conversation_json = 
+             
+           json = { "character_id": id,
+                   "character" : character["name"],
+                   "movie" : db.movies[int(character["movie_id"])]["title"],
+                   "gender" : character["gender"],
+                   "top_conversations" : conversation_json
+           }
     
     if json is None:
         raise HTTPException(status_code=404, detail="character not found.")
@@ -70,6 +82,15 @@ def list_characters(
     maximum number of results to return. The `offset` query parameter specifies the
     number of results to skip before returning results.
     """
-
-    json = None
+    character_json = None
+    json = {}
+    i = 0
+    for int j in range (offset,):
+        character_json = { "character_id": int(db.characters[j]["character_id"]),
+                   "character" : db.characters[j]["name"],
+                   "movie" : db.movies[int(db.character[j]["movie_id"])]["title"],
+                   "number_of_lines" : "NAN",}
+        json[i] = character_json
+        i += 1
+            
     return json
