@@ -7,10 +7,11 @@ router = APIRouter()
 
 
 
-def unique_integers_sorted(arr):
+def most_common_number(arr):
     count = Counter(arr)
-    sorted_ints = [x[0] for x in count.most_common()]
-    return sorted_ints
+    most_common, num_occurrences = count.most_common(1)[0]
+    return most_common, num_occurrences
+
 
 
 @router.get("/characters/{id}", tags=["characters"])
@@ -38,21 +39,25 @@ def get_character(id: str):
     character = db.characters[id]
     print(character)
 
-    convo_chars = []
+    convo_stats = {}
     for line_id, line in db.lines.items():
-        if line['character_id'] == id:
-            # print(line)
-            # print()
+        if line['character_id'] != id:
+            continue
+        
+        convo_id = line['conversation_id']
+        convo = db.conversations[convo_id]
+        char1_id, char2_id = convo['character1_id'], convo['character2_id']
+        other_char_id = char2_id if id == char1_id else char1_id
+    
+        if other_char_id not in convo_stats:
+            convo_stats[other_char_id] = {'num_lines': 0, 'convo_ids': []}
 
-            convo_id = line["conversation_id"]
-            convo = db.conversations[convo_id]
-
-            if id == convo["character1_id"]:
-                convo_chars.append(int(convo["character2_id"]))
-            if id == convo["character2_id"]:
-                convo_chars.append(int(convo["character1_id"]))
-    convo_chars_sorted = unique_integers_sorted(convo_chars)
-    print(convo_chars_sorted)
+        convo_stats[other_char_id]['num_lines'] += 1
+        convo_stats[other_char_id]['convo_ids'].append(int(convo_id))
+    print(convo_stats)
+    # most_common_convo_char, num_convos = most_common_number(convo_chars)
+    # print(most_common_convo_char, num_convos)
+    # print(json)
     return 
 
 class character_sort_options(str, Enum):
