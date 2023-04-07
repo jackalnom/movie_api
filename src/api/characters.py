@@ -115,6 +115,5 @@ def list_characters(
                    "movie" : filtered_movie["title"],
                    "number_of_lines" : len(filtered_lines)}
           character_list.append(character_json)
-          print(i)
     
     return character_list
