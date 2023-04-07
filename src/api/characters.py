@@ -97,15 +97,16 @@ def list_characters(
     maximum number of results to return. The `offset` query parameter specifies the
     number of results to skip before returning results.
     """
-    character_json = None
-    json = {}
-    # i = 0
-    # for int j in range (offset,):
-    #     character_json = { "character_id": int(db.characters[j]["character_id"]),
-    #                "character" : db.characters[j]["name"],
-    #                "movie" : db.movies[int(db.character[j]["movie_id"])]["title"],
-    #                "number_of_lines" : "NAN",}
-    #     json[i] = character_json
-    #     i += 1
-            
-    return json
+    character_list = []
+    sorted_characters = sorted(sorted(sorted(db.characters, key = lambda x: x["character_id"]), key = lambda x: x["name"]), key= lambda x: x["name"] == "")
+    for i in range(offset, limit):
+        if i < len(sorted_characters):
+          character_json = { "character_id": sorted_characters[i]["character_id"],
+                   "character" : sorted_characters[i]["name"],
+                  #  "movie" : db.movies[int(sorted_characters[i]["movie_id"])]["title"],
+                   "number_of_lines" : "NAN",}
+          character_list.append(character_json)
+        else:
+            break
+    
+    return character_list
