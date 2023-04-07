@@ -4,7 +4,6 @@ from src import database as db
 
 router = APIRouter()
 
-
 @router.get("/characters/{id}", tags=["characters"])
 def get_character(id: str):
     """
@@ -26,20 +25,36 @@ def get_character(id: str):
     * `number_of_lines_together`: The number of lines the character has with the
       originally queried character.
     """
-
-
+    top_conversations = []
+    processed_convo = {}
     for character in db.characters:
         if character["character_id"] == id:  
-           for conversation in db.conversations.filter(i,n){
-                   return n.character1_id == id or n.character2_id == id
-           }:
-               conversation_json = 
-             
-           json = { "character_id": id,
+          filtered_convos = list(filter(lambda x: 
+            (x["character1_id"] == id or x["character2_id"] == id), db.conversations))
+          for convo in filtered_convos:
+              filtered_lines = list(filter(lambda x: (x["conversation_id"] == convo["conversation_id"]), db.lines))
+              processed_lines = max(filtered_lines, key = lambda x: x["line_sort"])
+              char_id = ( convo["character2_id"] if convo["character1_id"] == id  else convo["character1_id"])
+              processed_convo = {
+                  "character_id" : int(char_id),
+                  "character": db.characters[int(char_id)]["name"],
+                  "gender" : db.characters[int(char_id)]["gender"] if db.characters[int(char_id)]["gender"] != "" else None ,
+                  "number_of_lines_together" : int(processed_lines["line_sort"])
+              }
+              contains = False
+              for entry in top_conversations:
+                  if(int(entry["character_id"]) == int(char_id)):
+                    contains = True
+              if contains:
+                  entry["number_of_lines_together"] = int(entry["number_of_lines_together"]) + int(processed_lines["line_sort"])
+              else:
+                  top_conversations.append(processed_convo)
+                           
+          json = { "character_id": int(id),
                    "character" : character["name"],
                    "movie" : db.movies[int(character["movie_id"])]["title"],
                    "gender" : character["gender"],
-                   "top_conversations" : conversation_json
+                   "top_conversations" : sorted(top_conversations, key = lambda x: x["number_of_lines_together"], reverse = True)
            }
     
     if json is None:
@@ -84,13 +99,13 @@ def list_characters(
     """
     character_json = None
     json = {}
-    i = 0
-    for int j in range (offset,):
-        character_json = { "character_id": int(db.characters[j]["character_id"]),
-                   "character" : db.characters[j]["name"],
-                   "movie" : db.movies[int(db.character[j]["movie_id"])]["title"],
-                   "number_of_lines" : "NAN",}
-        json[i] = character_json
-        i += 1
+    # i = 0
+    # for int j in range (offset,):
+    #     character_json = { "character_id": int(db.characters[j]["character_id"]),
+    #                "character" : db.characters[j]["name"],
+    #                "movie" : db.movies[int(db.character[j]["movie_id"])]["title"],
+    #                "number_of_lines" : "NAN",}
+    #     json[i] = character_json
+    #     i += 1
             
     return json
