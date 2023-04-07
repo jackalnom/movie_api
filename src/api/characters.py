@@ -40,21 +40,50 @@ def get_character(id: str):
     print(character)
 
     convo_stats = {}
-    for line_id, line in db.lines.items():
-        if line['character_id'] != id:
+    for convo_id, convo in db.conversations.items():
+        if (convo['character1_id'] != id) and (convo['character2_id'] != id):
             continue
         
-        convo_id = line['conversation_id']
-        convo = db.conversations[convo_id]
         char1_id, char2_id = convo['character1_id'], convo['character2_id']
         other_char_id = char2_id if id == char1_id else char1_id
-    
+
         if other_char_id not in convo_stats:
             convo_stats[other_char_id] = {'num_lines': 0, 'convo_ids': []}
 
-        convo_stats[other_char_id]['num_lines'] += 1
+        for line_id, line in db.lines.items():
+            if convo_id == line["conversation_id"]:
+                convo_stats[other_char_id]['num_lines'] += 1
         convo_stats[other_char_id]['convo_ids'].append(int(convo_id))
+
+
+    # convo_stats = {}
+    # for line_id, line in db.lines.items():
+    #     if line['character_id'] != id:
+    #         continue
+        
+    #     convo_id = line['conversation_id']
+    #     convo = db.conversations[convo_id]
+    #     char1_id, char2_id = convo['character1_id'], convo['character2_id']
+    #     other_char_id = char2_id if id == char1_id else char1_id
+    
+    #     if other_char_id not in convo_stats:
+    #         convo_stats[other_char_id] = {'num_lines': 0, 'convo_ids': []}
+
+    #     convo_stats[other_char_id]['num_lines'] += 1
+    #     convo_stats[other_char_id]['convo_ids'].append(int(convo_id))
+    print()
     print(convo_stats)
+    print()
+
+    max_num_lines_ele = None
+    max_num_lines = -1
+    for element in convo_stats.values():
+        if element['num_lines'] > max_num_lines:
+            max_num_lines_ele = element
+            max_num_lines = element['num_lines']
+
+    print(max_num_lines_ele)
+
     # most_common_convo_char, num_convos = most_common_number(convo_chars)
     # print(most_common_convo_char, num_convos)
     # print(json)
