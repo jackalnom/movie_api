@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from enum import Enum
 from src import database as db
+import json
 
 router = APIRouter()
 
@@ -26,7 +27,7 @@ def get_character(id: int):
     * `number_of_lines_together`: The number of lines the character has with the
       originally queried character.
     """
-    json = None
+    jsonObject = None
 
     for character in db.characters:
         if character["character_id"] == id:
@@ -57,7 +58,7 @@ def get_character(id: int):
             #sort top_conversations by `number_of_lines_together` (most to least)
             top_conversations = sorted(top_conversations, key=lambda c: c["number_of_lines_together"], reverse=True) 
 
-            json = { "character_id": character["movie_id"],
+            jsonObject = { "character_id": character["movie_id"],
                 "character": character["name"],
                 "movie":  movie_name,
                 "gender":  character["gender"],
@@ -65,10 +66,10 @@ def get_character(id: int):
             }
 
         
-    if json is None:
+    if jsonObject is None:
         raise HTTPException(status_code=404, detail="movie not found.")
 
-    return json
+    return jsonObject
 
 
 
