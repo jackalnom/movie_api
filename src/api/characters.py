@@ -2,15 +2,40 @@ from fastapi import APIRouter, HTTPException
 from enum import Enum
 from src import database as db
 from collections import Counter
+import json as JSON
 
 router = APIRouter()
 
+def get_convo_stats(id):
+    convo_stats = {}
+    for convo_id, convo in db.conversations.items():
+        if (convo['character1_id'] != id) and (convo['character2_id'] != id):
+            continue
+        
+        char1_id, char2_id = convo['character1_id'], convo['character2_id']
+        other_char_id = char2_id if id == char1_id else char1_id
 
+        if other_char_id not in convo_stats:
+            convo_stats[other_char_id] = {'num_lines': 0, 'convo_ids': []}
 
-def most_common_number(arr):
-    count = Counter(arr)
-    most_common, num_occurrences = count.most_common(1)[0]
-    return most_common, num_occurrences
+        for line_id, line in db.lines.items():
+            if convo_id == line["conversation_id"]:
+                convo_stats[other_char_id]['num_lines'] += 1
+        convo_stats[other_char_id]['convo_ids'].append(int(convo_id))
+    return convo_stats
+
+def convo_stats_to_top_convos(convo_stats):
+    top_convos = []
+    for convo_stat_id, convo_stat in convo_stats.items():
+        char = db.characters[str(convo_stat_id)]
+        item = {
+            "character_id": int(convo_stat_id),
+            "character": char["name"],
+            "gender": char["gender"],
+            "number_of_lines_together": int(convo_stat["num_lines"])
+        }
+        top_convos.append(item)
+    return top_convos
 
 
 
@@ -35,59 +60,37 @@ def get_character(id: str):
     * `number_of_lines_together`: The number of lines the character has with the
       originally queried character.
     """
+    # get character and movie 
     json = None
     character = db.characters[id]
-    print(character)
 
-    convo_stats = {}
-    for convo_id, convo in db.conversations.items():
-        if (convo['character1_id'] != id) and (convo['character2_id'] != id):
-            continue
-        
-        char1_id, char2_id = convo['character1_id'], convo['character2_id']
-        other_char_id = char2_id if id == char1_id else char1_id
+    movie_title = ""
+    for movie_id, movie in db.movies.items():
+        if character["movie_id"] == movie_id:
+            movie_title = movie["title"]
 
-        if other_char_id not in convo_stats:
-            convo_stats[other_char_id] = {'num_lines': 0, 'convo_ids': []}
+    convo_stats = get_convo_stats(id)
 
-        for line_id, line in db.lines.items():
-            if convo_id == line["conversation_id"]:
-                convo_stats[other_char_id]['num_lines'] += 1
-        convo_stats[other_char_id]['convo_ids'].append(int(convo_id))
+    # sort based on num_lines, from greatest to least 
+    convo_stats = sort_dict_by_num_lines(convo_stats)
 
-
-    # convo_stats = {}
-    # for line_id, line in db.lines.items():
-    #     if line['character_id'] != id:
-    #         continue
-        
-    #     convo_id = line['conversation_id']
-    #     convo = db.conversations[convo_id]
-    #     char1_id, char2_id = convo['character1_id'], convo['character2_id']
-    #     other_char_id = char2_id if id == char1_id else char1_id
+    # transform convo_stats into top_conversations desired json form
+    top_convos = convo_stats_to_top_convos(convo_stats)
     
-    #     if other_char_id not in convo_stats:
-    #         convo_stats[other_char_id] = {'num_lines': 0, 'convo_ids': []}
+    out = JSON.dumps({
+        "character_id": int(id),
+        "character": character["name"],
+        "movie": movie_title,
+        "gender": character["gender"],
+        "top_conversations": top_convos
+    })
+    print("GET CHARACTER: ", out)
+    return out 
 
-    #     convo_stats[other_char_id]['num_lines'] += 1
-    #     convo_stats[other_char_id]['convo_ids'].append(int(convo_id))
-    print()
-    print(convo_stats)
-    print()
+def sort_dict_by_num_lines(dictionary):
+    sorted_dict = {k: v for k, v in sorted(dictionary.items(), key=lambda item: item[1]['num_lines'], reverse=True)}
+    return sorted_dict
 
-    max_num_lines_ele = None
-    max_num_lines = -1
-    for element in convo_stats.values():
-        if element['num_lines'] > max_num_lines:
-            max_num_lines_ele = element
-            max_num_lines = element['num_lines']
-
-    print(max_num_lines_ele)
-
-    # most_common_convo_char, num_convos = most_common_number(convo_chars)
-    # print(most_common_convo_char, num_convos)
-    # print(json)
-    return 
 
 class character_sort_options(str, Enum):
     character = "character"
