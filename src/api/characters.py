@@ -98,15 +98,23 @@ def list_characters(
     number of results to skip before returning results.
     """
     character_list = []
+    filtered_movie = {}
+    filtered_lines = {}
     sorted_characters = sorted(sorted(sorted(db.characters, key = lambda x: x["character_id"]), key = lambda x: x["name"]), key= lambda x: x["name"] == "")
     for i in range(offset, limit):
         if i < len(sorted_characters):
-          character_json = { "character_id": sorted_characters[i]["character_id"],
+          movie_id = int(sorted_characters[i]["movie_id"])
+          for movie in db.movies:
+            if (int(movie["movie_id"]) == movie_id):
+              filtered_movie = movie
+              break
+          filtered_lines = list(filter(lambda x: (x["character_id"] == sorted_characters[i]["character_id"]), db.lines))
+
+          character_json = { "character_id": int(sorted_characters[i]["character_id"]),
                    "character" : sorted_characters[i]["name"],
-                  #  "movie" : db.movies[int(sorted_characters[i]["movie_id"])]["title"],
-                   "number_of_lines" : "NAN",}
+                   "movie" : filtered_movie["title"],
+                   "number_of_lines" : len(filtered_lines)}
           character_list.append(character_json)
-        else:
-            break
+          print(i)
     
     return character_list
