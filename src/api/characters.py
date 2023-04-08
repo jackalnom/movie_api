@@ -33,40 +33,40 @@ def get_character(id: int):
     for character in db.characters:
         if character["character_id"] == id:
             print("character found")
-            found_char = character
+            jsonObject = json.dumps(character)
 
-    if found_char is not None:
-        #get movie name from db.movies using movie_id
-        movie_name = next(movie for movie in db.movies if movie["movie_id"] == found_char["movie_id"])["title"]
+    # if found_char is not None:
+    #     #get movie name from db.movies using movie_id
+    #     movie_name = next(movie for movie in db.movies if movie["movie_id"] == found_char["movie_id"])["title"]
 
-        #get top conversations
-        #filter conversations by character1_id => (gets all conversations w/ that character)
-        all_conversations = [convo for convo in db.conversations if (convo['character1_id'] == found_char["character_id"] or convo['character2_id'] == found_char["character_id"])] 
-        top_conversations = []
+    #     #get top conversations
+    #     #filter conversations by character1_id => (gets all conversations w/ that character)
+    #     all_conversations = [convo for convo in db.conversations if (convo['character1_id'] == found_char["character_id"] or convo['character2_id'] == found_char["character_id"])] 
+    #     top_conversations = []
 
-        #for each conversation w character:
-        for convo in all_conversations:
-            #get convo id
-            #filter db.lines by convo_id and count num lines
-            #if num lines > than some threshold, add current convo dict to top_conversations
-            convo_lines = [line for line in db.lines if line['conversation_id'] == convo['conversation_id']]
-            other_char = next(char for char in db.characters if char["character_id"] == convo["character2_id"])
-            top_conversations.append({
-                    "character_id": convo["character2_id"],
-                    "character": other_char["name"],
-                    "gender": other_char["gender"],
-                    "number_of_lines_together": len(convo_lines)
-                })
+    #     #for each conversation w character:
+    #     for convo in all_conversations:
+    #         #get convo id
+    #         #filter db.lines by convo_id and count num lines
+    #         #if num lines > than some threshold, add current convo dict to top_conversations
+    #         convo_lines = [line for line in db.lines if line['conversation_id'] == convo['conversation_id']]
+    #         other_char = next(char for char in db.characters if char["character_id"] == convo["character2_id"])
+    #         top_conversations.append({
+    #                 "character_id": convo["character2_id"],
+    #                 "character": other_char["name"],
+    #                 "gender": other_char["gender"],
+    #                 "number_of_lines_together": len(convo_lines)
+    #             })
             
-        #sort top_conversations by `number_of_lines_together` (most to least)
-        #top_conversations = sorted(top_conversations, key=lambda c: c["number_of_lines_together"], reverse=True) 
+    #     #sort top_conversations by `number_of_lines_together` (most to least)
+    #     #top_conversations = sorted(top_conversations, key=lambda c: c["number_of_lines_together"], reverse=True) 
 
-        jsonObject = { "character_id": character["movie_id"],
-            "character": character["name"],
-            "movie":  movie_name,
-            "gender":  character["gender"],
-            "top_conversations": json.dumps(top_conversations)
-        }
+    #     jsonObject = { "character_id": character["movie_id"],
+    #         "character": character["name"],
+    #         "movie":  movie_name,
+    #         "gender":  character["gender"],
+    #         "top_conversations": json.dumps(top_conversations)
+    #     }
 
           
     if jsonObject is None:
