@@ -39,8 +39,6 @@ def get_character(id: str):
               if id == convo["character1_id"]:
                 json["top_conversations"].append(convo)
 
-
-    
     if json is None:
         raise HTTPException(status_code=404, detail="movie not found.")
     return json
