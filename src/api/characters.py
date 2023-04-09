@@ -100,7 +100,15 @@ def list_characters(
     character_list = []
     filtered_movie = {}
     filtered_lines = {}
-    sorted_characters = sorted(sorted(sorted(db.characters, key = lambda x: x["character_id"]), key = lambda x: x["name"]), key= lambda x: x["name"] == "")
+    temp = sorted(db.characters, key = lambda x: x["character_id"]) 
+    if (character_sort_options == character_sort_options.character):
+        temp = sorted(temp, key = lambda x: x["name"])
+    elif (character_sort_options == character_sort_options.movie):
+        temp = sorted(temp, key = lambda x: x["movie_id"])
+    else:
+        temp = sorted(temp, key = lambda x: x["number_of_lines"])
+
+    sorted_characters = sorted(temp, key= lambda x: x["name"] == "")
     for i in range(offset, limit):
         if i < len(sorted_characters):
           movie_id = int(sorted_characters[i]["movie_id"])
