@@ -2,7 +2,6 @@ from fastapi import APIRouter, HTTPException
 from enum import Enum
 from src import database as db
 from collections import Counter
-import json as JSON
 
 router = APIRouter()
 
@@ -77,13 +76,13 @@ def get_character(id: str):
     # transform convo_stats into top_conversations desired json form
     top_convos = convo_stats_to_top_convos(convo_stats)
     
-    out = JSON.dumps({
+    out = {
         "character_id": int(id),
         "character": character["name"],
         "movie": movie_title,
         "gender": character["gender"],
         "top_conversations": top_convos
-    })
+    }
     print("GET CHARACTER: ", out)
     return out 
 
