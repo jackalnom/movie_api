@@ -80,7 +80,7 @@ def get_character(id: str):
         "character_id": int(id),
         "character": character["name"],
         "movie": movie_title,
-        "gender": character["gender"],
+        "gender": character["gender"] or None,
         "top_conversations": top_convos
     }
     print("GET CHARACTER: ", out)
