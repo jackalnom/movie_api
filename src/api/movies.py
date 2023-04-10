@@ -40,7 +40,6 @@ class movie_sort_options(str, Enum):
     year = "year"
     rating = "rating"
 
-
 # Add get parameters
 @router.get("/movies/", tags=["movies"])
 def list_movies(
@@ -71,6 +70,30 @@ def list_movies(
     maximum number of results to return. The `offset` query parameter specifies the
     number of results to skip before returning results.
     """
-    json = None
 
-    return json
+    def get_sort_key(movie):
+        if sort == movie_sort_options.movie_title:
+            return movie['movie_title']
+        elif sort == movie_sort_options.year:
+            return movie['year']
+        elif sort == movie_sort_options.rating:
+            return -movie['imdb_rating']
+
+    # retrieve movies from database
+    movies = []
+    for movie_id, movie_data in db.movies.items():
+        if name.lower() in movie_data['title'].lower():
+            movie = {
+                "movie_id": int(movie_id),
+                "movie_title": movie_data["title"] or None,
+                "year": movie_data["year"] or None,
+                "imdb_rating": float(movie_data['imdb_rating']),
+                "imdb_votes": int(movie_data['imdb_votes'])
+            }
+            movies.append(movie)
+
+    # sort and paginate 
+    movies = sorted(movies, key=get_sort_key)
+    movies = movies[offset : offset + limit]
+
+    return movies
