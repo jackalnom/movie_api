@@ -49,8 +49,9 @@ def get_character(id: str):
                   if(int(entry["character_id"]) == int(char_id)):
                     contains = True
               if contains:
-                  entry["number_of_lines_together"] = int(entry["number_of_lines_together"]) 
-                  + int(processed_lines["line_sort"])
+                  entry["number_of_lines_together"] = int(
+                    entry["number_of_lines_together"]) + int(
+                     processed_lines["line_sort"])
               else:
                   top_conversations.append(processed_convo)
                            
@@ -58,8 +59,8 @@ def get_character(id: str):
                    "character" : character["name"],
                    "movie" : db.movies[int(character["movie_id"])]["title"],
                    "gender" : character["gender"],
-                   "top_conversations" : sorted(top_conversations, key = lambda x: x["number_of_lines_together"], 
-                                                reverse = True)
+                   "top_conversations" : sorted(top_conversations, key = 
+                    lambda x: x["number_of_lines_together"], reverse = True)
            }
     
     if json is None:
@@ -121,12 +122,14 @@ def list_characters(
             if (int(movie["movie_id"]) == movie_id):
               filtered_movie = movie
               break
-          filtered_lines = list(filter(lambda x: (x["character_id"] == sorted_characters[i]["character_id"]), db.lines))
+          filtered_lines = list(filter(lambda x: (x["character_id"]
+             == sorted_characters[i]["character_id"]), db.lines))
 
-          character_json = { "character_id": int(sorted_characters[i]["character_id"]),
-                   "character" : sorted_characters[i]["name"],
-                   "movie" : filtered_movie["title"],
-                   "number_of_lines" : len(filtered_lines)}
+          character_json = { 
+            "character_id": int(sorted_characters[i]["character_id"]),
+            "character" : sorted_characters[i]["name"],
+            "movie" : filtered_movie["title"],
+            "number_of_lines" : len(filtered_lines)}
           character_list.append(character_json)
     
     return character_list

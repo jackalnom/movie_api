@@ -55,7 +55,8 @@ with open("lines.csv", mode="r", encoding="utf8") as csv_file:
     for movie in movies:
         entry = { 
             "movie_id": movie["movie_id"],
-            "top_chars" : filter(lambda x: x["movie_id"] == movie["movie_id"], lines_by_character)
+            "top_chars" : filter(lambda x: x["movie_id"] 
+               == movie["movie_id"], lines_by_character)
             }
 
 
