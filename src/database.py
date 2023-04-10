@@ -5,9 +5,10 @@ import json
 # an example of reading the CSV files where you will get the data to complete
 # the assignment.
 
+# added appropriate types to json tables, may abstract more
+
 print("reading movies")
 
-# replaced movies
 with open("movies.csv", mode="r", encoding="utf8") as csv_file:
     csv_reader = csv.DictReader(csv_file)
     movies = []
@@ -22,7 +23,6 @@ with open("movies.csv", mode="r", encoding="utf8") as csv_file:
         }
         movies.append(movie)
 
-# replaced characters
 with open("characters.csv", mode="r", encoding="utf8") as csv_file:
     csv_reader = csv.DictReader(csv_file)
     characters = []
@@ -31,7 +31,7 @@ with open("characters.csv", mode="r", encoding="utf8") as csv_file:
             "character_id": int(row["character_id"]),
             "name": row["name"],
             "movie_id": int(row["movie_id"]),
-            "gender": row["gender"],
+            "gender": row["gender"] if len(row["gender"]) != 0 else None,
             "age": int(row["age"]) if row["age"].isdigit() else None
         }
         characters.append(character)
@@ -61,6 +61,3 @@ with open("lines.csv", mode="r", encoding="utf8") as csv_file:
             "line_text": str(row["line_text"])
         }
         lines.append(line)
-
-# make new table that includes character_id and number of lines (maybe)
-
