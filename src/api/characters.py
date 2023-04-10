@@ -32,13 +32,16 @@ def get_character(id: str):
           filtered_convos = list(filter(lambda x: 
             (x["character1_id"] == id or x["character2_id"] == id), db.conversations))
           for convo in filtered_convos:
-              filtered_lines = list(filter(lambda x: (x["conversation_id"] == convo["conversation_id"]), db.lines))
+              filtered_lines = list(filter(lambda x: 
+              (x["conversation_id"] == convo["conversation_id"]), db.lines))
               processed_lines = max(filtered_lines, key = lambda x: x["line_sort"])
-              char_id = ( convo["character2_id"] if convo["character1_id"] == id  else convo["character1_id"])
+              char_id = ( convo["character2_id"] if 
+                         convo["character1_id"] == id  else convo["character1_id"])
               processed_convo = {
                   "character_id" : int(char_id),
                   "character": db.characters[int(char_id)]["name"],
-                  "gender" : db.characters[int(char_id)]["gender"] if db.characters[int(char_id)]["gender"] != "" else None ,
+                  "gender" : db.characters[int(char_id)]["gender"] if 
+                  db.characters[int(char_id)]["gender"] != "" else None ,
                   "number_of_lines_together" : int(processed_lines["line_sort"])
               }
               contains = False
@@ -46,7 +49,8 @@ def get_character(id: str):
                   if(int(entry["character_id"]) == int(char_id)):
                     contains = True
               if contains:
-                  entry["number_of_lines_together"] = int(entry["number_of_lines_together"]) + int(processed_lines["line_sort"])
+                  entry["number_of_lines_together"] = int(entry["number_of_lines_together"]) 
+                  + int(processed_lines["line_sort"])
               else:
                   top_conversations.append(processed_convo)
                            
@@ -54,7 +58,8 @@ def get_character(id: str):
                    "character" : character["name"],
                    "movie" : db.movies[int(character["movie_id"])]["title"],
                    "gender" : character["gender"],
-                   "top_conversations" : sorted(top_conversations, key = lambda x: x["number_of_lines_together"], reverse = True)
+                   "top_conversations" : sorted(top_conversations, key = lambda x: x["number_of_lines_together"], 
+                                                reverse = True)
            }
     
     if json is None:
