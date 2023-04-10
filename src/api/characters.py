@@ -36,7 +36,9 @@ def convo_stats_to_top_convos(convo_stats):
         top_convos.append(item)
     return top_convos
 
-
+def sort_dict_by_num_lines(dictionary):
+    sorted_dict = {k: v for k, v in sorted(dictionary.items(), key=lambda item: item[1]['num_lines'], reverse=True)}
+    return sorted_dict
 
 @router.get("/characters/{id}", tags=["characters"])
 def get_character(id: str):
@@ -86,16 +88,12 @@ def get_character(id: str):
     print("GET CHARACTER: ", out)
     return out 
 
-def sort_dict_by_num_lines(dictionary):
-    sorted_dict = {k: v for k, v in sorted(dictionary.items(), key=lambda item: item[1]['num_lines'], reverse=True)}
-    return sorted_dict
 
 
 class character_sort_options(str, Enum):
     character = "character"
     movie = "movie"
     number_of_lines = "number_of_lines"
-
 
 @router.get("/characters/", tags=["characters"])
 def list_characters(
@@ -126,5 +124,30 @@ def list_characters(
     number of results to skip before returning results.
     """
 
-    json = None
-    return json
+    def get_sort_key(char):
+        if sort == character_sort_options.character:
+            return char['name']
+        elif sort == character_sort_options.movie:
+            return db.movies[char['movie_id']]['title']
+        elif sort == character_sort_options.number_of_lines:
+            return -char['number_of_lines']
+
+    # retrieve characters from database
+    characters = []
+    for char_id, char_data in db.characters.items():
+        if name.lower() in char_data['name'].lower():
+            char = {
+                'character_id': char_id,
+                'character': char_data['name'],
+                'movie': db.movies[char_data['movie_id']]['title'],
+                'number_of_lines': len([line for line in db.lines.values() if line['character_id'] == char_id])
+            }
+            characters.append(char)
+    
+    # sort characters
+    characters = sorted(characters, key=get_sort_key)
+    
+    # apply pagination
+    characters = characters[offset : offset + limit]
+    
+    return characters
