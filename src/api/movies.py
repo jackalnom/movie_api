@@ -22,12 +22,30 @@ def get_movie(movie_id: str):
     * `num_lines`: The number of lines the character has in the movie.
 
     """
-
+    top_characters = []
+    newCharacter = {}
+    limit = 5
+    i = 0
     for movie in db.movies:
         if movie["movie_id"] == id:
-            print("movie found")
+            for character in db.lines_by_character:
+                if character["movie_id"] == movie["movie_id"]:
+                    if i < limit:
+                        newCharacter = {
+                            "character_id" : character["character_id"],
+                            "character" : character["name"],
+                            "num_lines": character["num_lines"]
+                        }
+                        top_characters.append(newCharacter)
+                        i += 1
 
-    json = None
+            json = {
+                "movie_id" : movie["movie_id"],
+                "title" : movie["title"],
+                "top_characters" : top_characters
+            }
+        else:
+            json = None
 
     if json is None:
         raise HTTPException(status_code=404, detail="movie not found.")

@@ -11,6 +11,12 @@ with open("movies.csv", mode="r", encoding="utf8") as csv_file:
         {k: v for k, v in row.items()}
         for row in csv.DictReader(csv_file, skipinitialspace=True)
     ]
+    top_chars = []
+    for movie in movies:
+        entry = { 
+            "movie_id": movie["movie_id"],
+
+            }
 
 with open("characters.csv", mode="r", encoding="utf8") as csv_file:
     characters = [
@@ -29,3 +35,26 @@ with open("lines.csv", mode="r", encoding="utf8") as csv_file:
         {k: v for k, v in row.items()}
         for row in csv.DictReader(csv_file, skipinitialspace=True)
     ]
+
+    lines_by_character = []
+    for line in lines:
+        for character in lines_by_character:
+            if line["character_id"] == character["character_id"]:
+                character["character_id"] += 1
+            else:
+                for entry in characters:
+                    if entry["character_id"] == line["character_id"]:
+                        name = entry["name"]
+                    else:
+                        name = None
+                newCharacter = {
+                    "character_id" : line["character_id"],
+                    "name" : name,
+                    "num_lines" : 1,
+                    "movie_id" : line["movie_id"]
+                }
+                lines_by_character.append(newCharacter)
+    lines_by_character.sort(reverse=True, key= lambda x: x["num_lines"])
+    lines_by_character.sort(reverse=True, key= lambda x: x["movie_id"])
+
+
