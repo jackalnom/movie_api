@@ -22,27 +22,16 @@ def get_movie(movie_id: str):
     * `num_lines`: The number of lines the character has in the movie.
 
     """
-    top_characters = []
     newCharacter = {}
     limit = 5
     i = 0
+
     for movie in db.movies:
         if movie["movie_id"] == id:
-            for character in db.lines_by_character:
-                if character["movie_id"] == movie["movie_id"]:
-                    if i < limit:
-                        newCharacter = {
-                            "character_id" : character["character_id"],
-                            "character" : character["name"],
-                            "num_lines": character["num_lines"]
-                        }
-                        top_characters.append(newCharacter)
-                        i += 1
-
-            json = {
+             json = {
                 "movie_id" : movie["movie_id"],
                 "title" : movie["title"],
-                "top_characters" : top_characters
+                "top_characters" : filter(lambda x: x["movie_id"] == id, db.top_chars_by_movie)
             }
         else:
             json = None
@@ -89,13 +78,23 @@ def list_movies(
     maximum number of results to return. The `offset` query parameter specifies the
     number of results to skip before returning results.
     """
+    filtered_movies = filter(lambda x: name in x["movie_title"], db.movies)
     movies = []
     new_movie = {}
+
+    if name is not "":
+        movie_list = filter(lambda x: str in x["title"], filtered_movies)
+    else:
+        movie_list = filtered_movies
     for i in range(offset, limit):
-        if i < len(db.movies):
+        if i < len(filtered_movies):
             new_movie = {
-
+                "movie_id" : filtered_movies[i]["movie_id"],
+                "movie_title" : filtered_movies[i]["movie_title"],
+                "year" : filtered_movies[i]["year"],
+                "imdb_rating" : filtered_movies[i]["imdb_rating"],
+                "imdb_votes" : filtered_movies[i]["imdb_votes"]
             }
+            movies.append(new_movie)
 
-
-    return json
+    return movies
