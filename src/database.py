@@ -61,3 +61,14 @@ with open("lines.csv", mode="r", encoding="utf8") as csv_file:
             "line_text": str(row["line_text"])
         }
         lines.append(line)
+'''
+top_lines = {}
+for character in characters:
+    id = character["character_id"]
+    for line in lines:
+'''
+
+# do a lot more indexing and preprocessing of data here (so you don't have to call multiple times)
+# do it more for the list_characters and list_movies function.
+
+#{character_id -> [{character_id, lines, movie}]}

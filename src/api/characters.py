@@ -103,7 +103,6 @@ class character_sort_options(str, Enum):
     movie = "movie"
     number_of_lines = "number_of_lines"
 
-
 @router.get("/characters/", tags=["characters"])
 def list_characters(
     name: str = "",
@@ -111,6 +110,9 @@ def list_characters(
     offset: int = 0,
     sort: character_sort_options = character_sort_options.character,
 ):
+
+  # offset = number of results to skip before returning results (watch edge cases)
+  # create a dictionary that has the kvp (character_id, [(maybe also movie), num_lines])
 
     """
     This endpoint returns a list of characters. For each character it returns:
