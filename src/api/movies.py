@@ -22,18 +22,41 @@ def get_movie(movie_id: str):
     * `num_lines`: The number of lines the character has in the movie.
 
     """
+    # get movie
+    try:
+        movie = db.movies[movie_id]
+    except KeyError:
+        raise HTTPException(status_code=404, detail="Movie not found")
 
-    for movie in db.movies:
-        if movie["movie_id"] == id:
-            print("movie found")
+    char_stats = get_char_stats(movie_id)
 
-    json = None
+    return {
+        'movie_id': int(movie_id),
+        'title': movie['title'] or None,
+        'top_characters': char_stats
+    }
 
-    if json is None:
-        raise HTTPException(status_code=404, detail="movie not found.")
+def get_char_stats(id):
+    # find characters with given movie_id
+    stats = []
+    for char_id, char_data in db.characters.items():
+        if id not in char_data['movie_id'].lower():
+            continue 
 
-    return json
+        # find num lines in the movie 
+        nlines = 0
+        for line_id, line_data in db.lines.items():
+            if (int(line_data['character_id']) == int(char_id)) and (id in line_data['movie_id'].lower()):
+                nlines += 1
 
+        stats.append({
+            'character_id': int(char_id),
+            'character': str(char_data['name']) or None,
+            'num_lines': nlines
+        })
+    # sort based on num_lines, from greatest to least 
+    stats = sorted(stats, key=lambda x: x['num_lines'], reverse=True)
+    return stats[:5]
 
 class movie_sort_options(str, Enum):
     movie_title = "movie_title"
