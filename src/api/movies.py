@@ -84,13 +84,13 @@ def list_movies(
     else:
         movie_list = filtered_movies
     for i in range(offset, limit):
-        if i < len(filtered_movies):
+        if i < len(movie_list):
             new_movie = {
-                "movie_id" : filtered_movies[i]["movie_id"],
-                "movie_title" : filtered_movies[i]["movie_title"],
-                "year" : filtered_movies[i]["year"],
-                "imdb_rating" : filtered_movies[i]["imdb_rating"],
-                "imdb_votes" : filtered_movies[i]["imdb_votes"]
+                "movie_id" : movie_list[i]["movie_id"],
+                "movie_title" : movie_list[i]["movie_title"],
+                "year" : movie_list[i]["year"],
+                "imdb_rating" : movie_list[i]["imdb_rating"],
+                "imdb_votes" : movie_list[i]["imdb_votes"]
             }
             movies.append(new_movie)
 
