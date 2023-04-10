@@ -5,7 +5,7 @@ from src import database as db
 router = APIRouter()
 
 @router.get("/characters/{id}", tags=["characters"])
-def get_character(id: str):
+def get_character(id: int):
     """
     This endpoint returns a single character by its identifier. For each character
     it returns:
@@ -32,11 +32,14 @@ def get_character(id: str):
             print("character found")
             json = character
             id = json["character_id"]
+            print(id)
+            print(type(id))
             json["top_conversations"] = []
             # need to create the top conversations dictionary before returning the entire json object.
             # make sure you install uvicorn before next class just to make sure everything is running smoothly.
             for convo in db.conversations:
               if id == convo["character1_id"]:
+                print("convo found")
                 json["top_conversations"].append(convo)
 
     if json is None:
@@ -57,6 +60,7 @@ def list_characters(
     offset: int = 0,
     sort: character_sort_options = character_sort_options.character,
 ):
+  
     """
     This endpoint returns a list of characters. For each character it returns:
     * `character_id`: the internal id of the character. Can be used to query the
@@ -78,6 +82,5 @@ def list_characters(
     maximum number of results to return. The `offset` query parameter specifies the
     number of results to skip before returning results.
     """
-
     json = None
     return json
