@@ -89,6 +89,13 @@ def list_movies(
     maximum number of results to return. The `offset` query parameter specifies the
     number of results to skip before returning results.
     """
-    json = None
+    movies = []
+    new_movie = {}
+    for i in range(offset, limit):
+        if i < len(db.movies):
+            new_movie = {
+
+            }
+
 
     return json
