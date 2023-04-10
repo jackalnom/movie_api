@@ -126,7 +126,7 @@ def list_characters(
 
     def get_sort_key(char):
         if sort == character_sort_options.character:
-            return char['name']
+            return char['character']
         elif sort == character_sort_options.movie:
             return db.movies[char['movie_id']]['title']
         elif sort == character_sort_options.number_of_lines:
@@ -137,7 +137,7 @@ def list_characters(
     for char_id, char_data in db.characters.items():
         if name.lower() in char_data['name'].lower():
             char = {
-                'character_id': char_id,
+                'character_id': int(char_id),
                 'character': char_data['name'],
                 'movie': db.movies[char_data['movie_id']]['title'],
                 'number_of_lines': len([line for line in db.lines.values() if line['character_id'] == char_id])
