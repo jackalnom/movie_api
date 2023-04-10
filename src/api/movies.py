@@ -82,7 +82,7 @@ def list_movies(
     movies = []
     new_movie = {}
 
-    if name is not "":
+    if name != "":
         movie_list = filter(lambda x: str in x["title"], filtered_movies)
     else:
         movie_list = filtered_movies
