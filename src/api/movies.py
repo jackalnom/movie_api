@@ -22,16 +22,13 @@ def get_movie(movie_id: str):
     * `num_lines`: The number of lines the character has in the movie.
 
     """
-    newCharacter = {}
-    limit = 5
-    i = 0
-
     for movie in db.movies:
         if movie["movie_id"] == id:
              json = {
                 "movie_id" : movie["movie_id"],
                 "title" : movie["title"],
-                "top_characters" : filter(lambda x: x["movie_id"] == id, db.top_chars_by_movie)
+                "top_characters" : 
+                filter(lambda x: x["movie_id"] == id, db.top_chars_by_movie)
             }
         else:
             json = None
