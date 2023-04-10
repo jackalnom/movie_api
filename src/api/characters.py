@@ -130,7 +130,7 @@ def list_characters(
         if sort == character_sort_options.character:
             return char['character']
         elif sort == character_sort_options.movie:
-            return db.movies[char['movie_id']]['title']
+            return char['movie']
         elif sort == character_sort_options.number_of_lines:
             return -char['number_of_lines']
 
