@@ -86,5 +86,33 @@ def list_characters(
     maximum number of results to return. The `offset` query parameter specifies the
     number of results to skip before returning results.
     """
-    json = None
-    return json
+    json = []
+    # temp will hold characters that pass filter
+    temp = []
+    # json every character
+    for character in db.characters:
+        json_temp = {'character_id': character.character_id,
+                     'character': character.name.upper(),
+                     'movie': db.movieNames[character.movie_id],
+                     'number_of_lines': db.charsWithConvos[character.character_id][2]}
+        json.append(json_temp)
+    # filter characters by name
+    if len(name) > 0:
+        for j in json:
+            if name.upper() in j['character']:
+                temp.append(j)
+        json = temp
+    # sort remaining characters
+    if sort == character_sort_options.character:
+        json = sorted(json, key=lambda d: d['character'])
+    elif sort == character_sort_options.movie:
+        json = sorted(json, key=lambda d: d['movie'])
+    elif sort == character_sort_options.number_of_lines:
+        json = sorted(json, key=lambda d: d['number_of_lines'], reverse=True)
+    # return correct number of items
+    if len(json) <= offset:
+        return None
+    elif len(json) <= offset+limit:
+        return json[offset:]
+    else:
+        return json[offset:offset+limit]

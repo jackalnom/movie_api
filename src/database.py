@@ -35,13 +35,17 @@ class Character:
 
 with open("characters.csv", mode="r", encoding="utf8") as csv_file:
     characters = []
+    # charsWithConvos will contain the following information: it will be a dictionary whose keys are
+    # all different character_ids, for each character_id there will be a list containing the Character object,
+    # a dictionary whose keys with be character_ids that this character has had conversations with and whose values
+    # are the number of lines between these characters, and an int that represents this character's individual lines
     charsWithConvos = {}
     for row in csv.DictReader(csv_file, skipinitialspace=True):
         genderRow = row['gender'] if row['gender'] else None
         ageRow = int(row['age']) if row['age'] else None
         character = Character(int(row['character_id']), row['name'], int(row['movie_id']), genderRow, ageRow)
         characters.append(character)
-        charsWithConvos[character.character_id] = [character, {}]
+        charsWithConvos[character.character_id] = [character, {}, 0]
 
 @dataclass
 class Conversation:
@@ -74,6 +78,7 @@ with open("lines.csv", mode="r", encoding="utf8") as csv_file:
         line = Line(int(row['line_id']), int(row['character_id']), int(row['movie_id']), int(row['conversation_id']),
                     int(row['line_sort']), row['line_text'])
         lines.append(line)
+        charsWithConvos[line.character_id][2] += 1
         currentConvo = convoDictByID[line.conversation_id]
         if currentConvo.character1_id in charsWithConvos[currentConvo.character2_id][1]:
             charsWithConvos[currentConvo.character1_id][1][currentConvo.character2_id] += 1
