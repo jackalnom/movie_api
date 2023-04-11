@@ -1,10 +1,6 @@
 import csv
 import json
 
-# TODO: You will want to replace all of the code below. It is just to show you
-# an example of reading the CSV files where you will get the data to complete
-# the assignment.
-
 # added appropriate types to json tables, may abstract more
 
 print("reading movies")
@@ -18,35 +14,27 @@ with open("movies.csv", mode="r", encoding="utf8") as csv_file:
             "title": row["title"],
             "year": row["year"],
             "imdb_rating": float(row["imdb_rating"]),
-            "imdb_votes": int(row["imdb_votes"]),
-            "raw_script_url": row["raw_script_url"]
+            "imdb_votes": int(row["imdb_votes"])
         }
         movies.append(movie)
 
-with open("characters.csv", mode="r", encoding="utf8") as csv_file:
-    csv_reader = csv.DictReader(csv_file)
-    characters = []
-    for row in csv_reader:
-        character = {
-            "character_id": int(row["character_id"]),
-            "name": row["name"],
-            "movie_id": int(row["movie_id"]),
-            "gender": row["gender"] if len(row["gender"]) != 0 else None,
-            "age": int(row["age"]) if row["age"].isdigit() else None
-        }
-        characters.append(character)
+movie_list = []
+for movie in movies:
+    item = {
+        "movie_id": movie["movie_id"],
+        "movie_title": movie["title"],
+        "year": movie["year"],
+        "imdb_rating": movie["imdb_rating"],
+        "imdb_votes": movie["imdb_votes"]
+    }
+    movie_list.append(item)
 
-with open("conversations.csv", mode="r", encoding="utf8") as csv_file:
-    csv_reader = csv.DictReader(csv_file)
-    conversations = []
-    for row in csv_reader:
-        conversation = {
-            "conversation_id": int(row["conversation_id"]),
-            "character1_id": int(row["character1_id"]),
-            "character2_id": int(row["character2_id"]),
-            "movie_id": int(row["movie_id"])
-        }
-        conversations.append(conversation)
+def get_title(movied_id:int):
+    for movie in movies:
+        if movie["movie_id"] == movied_id:
+            return movie["title"]
+    else:
+        return None;
 
 with open("lines.csv", mode="r", encoding="utf8") as csv_file:
     csv_reader = csv.DictReader(csv_file)
@@ -61,6 +49,53 @@ with open("lines.csv", mode="r", encoding="utf8") as csv_file:
             "line_text": str(row["line_text"])
         }
         lines.append(line)
+
+# gets counts of lines of each character stored in a kvp("character_id", "num_lines")
+character_lines = {}
+for line in lines:
+    if line["character_id"] not in character_lines:
+        character_lines[line["character_id"]] = 1
+    else:
+        character_lines[line["character_id"]] += 1
+
+with open("characters.csv", mode="r", encoding="utf8") as csv_file:
+    csv_reader = csv.DictReader(csv_file)
+    characters = []
+    for row in csv_reader:
+        character = {
+            "character_id": int(row["character_id"]),
+            "name": row["name"],
+            "movie_id": int(row["movie_id"]),
+            "number_of_lines": 0 if int(row["character_id"]) not in character_lines else character_lines[int(row["character_id"])],
+            "movie": get_title(int(row["movie_id"])),
+            "gender": row["gender"] if len(row["gender"]) != 0 else None,
+            "age": int(row["age"]) if row["age"].isdigit() else None
+        }
+        characters.append(character)
+
+character_list = []
+for character in characters:
+    item = {
+        "character_id": character["character_id"],
+        "character": character["name"],
+        "movie": character["movie"],
+        "number_of_lines": character["number_of_lines"]
+    }
+    character_list.append(item)
+
+with open("conversations.csv", mode="r", encoding="utf8") as csv_file:
+    csv_reader = csv.DictReader(csv_file)
+    conversations = []
+    for row in csv_reader:
+        conversation = {
+            "conversation_id": int(row["conversation_id"]),
+            "character1_id": int(row["character1_id"]),
+            "character2_id": int(row["character2_id"]),
+            "movie_id": int(row["movie_id"])
+        }
+        conversations.append(conversation)
+
+
 '''
 top_lines = {}
 for character in characters:

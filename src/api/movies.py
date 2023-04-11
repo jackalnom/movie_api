@@ -5,9 +5,9 @@ from src import database as db
 router = APIRouter()
 
 
-# include top 3 actors by number of lines
+# include top 5 actors by number of lines ???
 @router.get("/movies/{movie_id}", tags=["movies"])
-def get_movie(movie_id: str):
+def get_movie(movie_id: int):
     """
     This endpoint returns a single movie by its identifier. For each movie it returns:
     * `movie_id`: the internal id of the movie.
@@ -22,12 +22,27 @@ def get_movie(movie_id: str):
     * `num_lines`: The number of lines the character has in the movie.
 
     """
-
-    for movie in db.movies:
-        if movie["movie_id"] == id:
-            print("movie found")
-
     json = None
+
+    for movie in db.movie_list:
+        if movie["movie_id"] == movie_id:
+            print("movie found")
+            json = {
+                "movie_id": movie["movie_id"],
+                "title": movie["movie_title"] 
+            }
+            tmp = []
+            for character in db.character_list:
+                if character["movie"] == json["title"]:
+                    item = {
+                        "character_id": character["character_id"],
+                        "character": character["character"],
+                        "num_lines": character["number_of_lines"]
+                    }
+                    tmp.append(item)
+            
+            tmp = sorted(tmp, key=lambda x: x["num_lines"], reverse=True)
+            json["top_characters"] = tmp[:5]
 
     if json is None:
         raise HTTPException(status_code=404, detail="movie not found.")
@@ -71,6 +86,16 @@ def list_movies(
     maximum number of results to return. The `offset` query parameter specifies the
     number of results to skip before returning results.
     """
-    json = None
+    if sort == "rating":
+        sort = "imdb_rating"
 
-    return json
+    returnList = []
+    tmp = sorted(db.movie_list, key=lambda x: x[sort], reverse=False if sort != "imdb_rating" else True)
+    tmp = [entry for entry in tmp if name in entry["movie_title"]]
+
+    i = offset
+    while i < limit + offset and i < len(tmp):
+      returnList.append(tmp[i])
+      i += 1
+    
+    return returnList
