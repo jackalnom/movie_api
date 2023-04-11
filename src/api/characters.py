@@ -42,7 +42,7 @@ def get_character(id: str):
             charConvos = sorted(charConvos, key=lambda d: d['number_of_lines_together'], reverse=True)
             json_return = {'character_id': character.character_id,
                            'character': character.name.upper(),
-                           'movie': db.movieNames[character.movie_id],
+                           'movie': db.moviesWithLines[character.movie_id][0].title,
                            'gender': character.gender,
                            'top_conversations': charConvos}
 
@@ -93,7 +93,7 @@ def list_characters(
     for character in db.characters:
         json_temp = {'character_id': character.character_id,
                      'character': character.name.upper(),
-                     'movie': db.movieNames[character.movie_id],
+                     'movie': db.moviesWithLines[character.movie_id][0].title,
                      'number_of_lines': db.charsWithConvos[character.character_id][2]}
         json.append(json_temp)
     # filter characters by name
