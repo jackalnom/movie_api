@@ -18,10 +18,12 @@ class Movie:
 
 with open("movies.csv", mode="r", encoding="utf8") as csv_file:
     movies = []
+    movieNames = {}
     for row in csv.DictReader(csv_file, skipinitialspace=True):
         movie = Movie(int(row['movie_id']), row['title'], row['year'], float(row['imdb_rating']),
                       int(row['imdb_votes']), row['raw_script_url'])
         movies.append(movie)
+        movieNames[movie.movie_id] = movie.title
 
 @dataclass
 class Character:
@@ -33,11 +35,13 @@ class Character:
 
 with open("characters.csv", mode="r", encoding="utf8") as csv_file:
     characters = []
+    charsWithConvos = {}
     for row in csv.DictReader(csv_file, skipinitialspace=True):
         genderRow = row['gender'] if row['gender'] else None
         ageRow = int(row['age']) if row['age'] else None
         character = Character(int(row['character_id']), row['name'], int(row['movie_id']), genderRow, ageRow)
         characters.append(character)
+        charsWithConvos[character.character_id] = [character, {}]
 
 @dataclass
 class Conversation:
@@ -48,10 +52,12 @@ class Conversation:
 
 with open("conversations.csv", mode="r", encoding="utf8") as csv_file:
     conversations = []
+    convoDictByID = {}
     for row in csv.DictReader(csv_file, skipinitialspace=True):
         conversation = Conversation(int(row['conversation_id']), int(row['character1_id']), int(row['character2_id']),
                                     int(row['movie_id']))
         conversations.append(conversation)
+        convoDictByID[conversation.conversation_id] = conversation
 
 @dataclass
 class Line:
@@ -68,3 +74,10 @@ with open("lines.csv", mode="r", encoding="utf8") as csv_file:
         line = Line(int(row['line_id']), int(row['character_id']), int(row['movie_id']), int(row['conversation_id']),
                     int(row['line_sort']), row['line_text'])
         lines.append(line)
+        currentConvo = convoDictByID[line.conversation_id]
+        if currentConvo.character1_id in charsWithConvos[currentConvo.character2_id][1]:
+            charsWithConvos[currentConvo.character1_id][1][currentConvo.character2_id] += 1
+            charsWithConvos[currentConvo.character2_id][1][currentConvo.character1_id] += 1
+        else:
+            charsWithConvos[currentConvo.character1_id][1][currentConvo.character2_id] = 1
+            charsWithConvos[currentConvo.character2_id][1][currentConvo.character1_id] = 1

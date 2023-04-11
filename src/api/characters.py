@@ -31,7 +31,20 @@ def get_character(id: str):
     for character in db.characters:
         if character.character_id == int(id):
             print("character found")
-            json_return = character
+            charConvos = []
+            for char in db.charsWithConvos[int(id)][1]:
+                currentChar = db.charsWithConvos[char][0]
+                temp_json = {'character_id': char,
+                             'character': currentChar.name,
+                             'gender': currentChar.gender,
+                             'number_of_lines_together': db.charsWithConvos[int(id)][1][char]}
+                charConvos.append(temp_json)
+            charConvos = sorted(charConvos, key=lambda d: d['number_of_lines_together'], reverse=True)
+            json_return = {'character_id': character.character_id,
+                           'character': character.name.upper(),
+                           'movie': db.movieNames[character.movie_id],
+                           'gender': character.gender,
+                           'top_conversations': charConvos}
 
     if json_return is None:
         raise HTTPException(status_code=404, detail="movie not found.")
@@ -73,6 +86,5 @@ def list_characters(
     maximum number of results to return. The `offset` query parameter specifies the
     number of results to skip before returning results.
     """
-
     json = None
     return json
