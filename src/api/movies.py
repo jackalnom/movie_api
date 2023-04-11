@@ -108,7 +108,7 @@ def list_movies(
         json = sorted(json, key=lambda d: d['imdb_rating'], reverse=True)
     # return correct number of items
     if len(json) <= offset:
-        return None
+        return {}
     elif len(json) <= offset + limit:
         return json[offset:]
     else:

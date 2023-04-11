@@ -39,3 +39,25 @@ def test_sort_filter():
 def test_404():
     response = client.get("/characters/400")
     assert response.status_code == 404
+
+
+# my tests
+def test_get_character2():
+    response = client.get("/characters/50")
+    assert response.status_code == 200
+
+    with open("test/characters/50.json", encoding="utf-8") as f:
+        assert response.json() == json.load(f)
+
+
+def test_sort_filter2():
+    response = client.get(
+        "/characters/?name=j&limit=17&offset=6&sort=movie"
+    )
+    assert response.status_code == 200
+
+    with open(
+        "test/characters/characters-name=j&limit=17&offset=6&sort=movie.json",
+        encoding="utf-8",
+    ) as f:
+        assert response.json() == json.load(f)

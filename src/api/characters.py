@@ -111,7 +111,7 @@ def list_characters(
         json = sorted(json, key=lambda d: d['number_of_lines'], reverse=True)
     # return correct number of items
     if len(json) <= offset:
-        return None
+        return {}
     elif len(json) <= offset+limit:
         return json[offset:]
     else:
