@@ -22,16 +22,23 @@ def get_movie(movie_id: str):
     * `num_lines`: The number of lines the character has in the movie.
 
     """
+    json = None
+    top_characters = []
     for movie in db.movies:
-        if movie["movie_id"] == id:
-             json = {
-                "movie_id" : movie["movie_id"],
+        if int(movie["movie_id"]) == int(movie_id):
+            for entry in db.top_chars_by_movie[movie["movie_id"]]:
+                top_characters.append( 
+                {
+                    "character" : entry["character"],
+                    "character_id" : int(entry["character_id"]),
+                    "num_lines" : int(entry["num_lines"])
+                })
+
+            json = {
+                "movie_id" : int(movie["movie_id"]),
                 "title" : movie["title"],
-                "top_characters" : 
-                filter(lambda x: x["movie_id"] == id, db.top_chars_by_movie)
+                "top_characters" : top_characters
             }
-        else:
-            json = None
 
     if json is None:
         raise HTTPException(status_code=404, detail="movie not found.")
@@ -75,22 +82,29 @@ def list_movies(
     maximum number of results to return. The `offset` query parameter specifies the
     number of results to skip before returning results.
     """
-    filtered_movies = filter(lambda x: name in x["movie_title"], db.movies)
     movies = []
     new_movie = {}
 
     if name != "":
-        movie_list = filter(lambda x: str in x["title"], filtered_movies)
+        movie_list = list(filter(lambda x: name in x["title"], db.movies))
     else:
-        movie_list = filtered_movies
+        movie_list = db.movies
+
+    if sort == "movie_title":
+        movie_list = sorted(movie_list, key = lambda x: x["title"])
+    elif sort == "year":
+        movie_list = sorted(movie_list, key = lambda x: x["year"])
+    elif sort == "rating":
+        movie_list = sorted(movie_list, key = lambda x: x["imdb_rating"], reverse=True)
+
     for i in range(offset, limit):
         if i < len(movie_list):
             new_movie = {
-                "movie_id" : movie_list[i]["movie_id"],
-                "movie_title" : movie_list[i]["movie_title"],
+                "movie_id" : int(movie_list[i]["movie_id"]),
+                "movie_title" : movie_list[i]["title"],
                 "year" : movie_list[i]["year"],
-                "imdb_rating" : movie_list[i]["imdb_rating"],
-                "imdb_votes" : movie_list[i]["imdb_votes"]
+                "imdb_rating" : float(movie_list[i]["imdb_rating"]),
+                "imdb_votes" : int(movie_list[i]["imdb_votes"])
             }
             movies.append(new_movie)
 

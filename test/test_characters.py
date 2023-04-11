@@ -35,6 +35,15 @@ def test_sort_filter():
     ) as f:
         assert response.json() == json.load(f)
 
+def test_sort_filter2():
+    response = client.get(
+        "/characters/?name=zzz&limit=50&offset=0&sort=number_of_lines"
+    )
+    assert response.status_code == 200
+
+    assert response.json() == []
+
+
 
 def test_404():
     response = client.get("/characters/400")

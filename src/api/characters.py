@@ -27,6 +27,7 @@ def get_character(id: str):
     """
     top_conversations = []
     processed_convo = {}
+    json = None
     for character in db.characters:
         if character["character_id"] == id:  
           filtered_convos = list(filter(lambda x: 
@@ -35,13 +36,17 @@ def get_character(id: str):
               filtered_lines = list(filter(lambda x: 
               (x["conversation_id"] == convo["conversation_id"]), db.lines))
               processed_lines = max(filtered_lines, key = lambda x: x["line_sort"])
-              char_id = ( convo["character2_id"] if 
-                         convo["character1_id"] == id  else convo["character1_id"])
+
+              char_id = (str(convo["character2_id"]) if 
+                         convo["character1_id"] == id 
+                         else str(convo["character1_id"]))
+              
+              gender = db.gender_by_id[char_id]
+              
               processed_convo = {
                   "character_id" : int(char_id),
-                  "character": db.characters[int(char_id)]["name"],
-                  "gender" : db.characters[int(char_id)]["gender"] if 
-                  db.characters[int(char_id)]["gender"] != "" else None ,
+                  "character": db.character_by_id[str(char_id)],
+                  "gender" : gender,
                   "number_of_lines_together" : int(processed_lines["line_sort"])
               }
               contains = False
@@ -57,8 +62,8 @@ def get_character(id: str):
                            
           json = { "character_id": int(id),
                    "character" : character["name"],
-                   "movie" : db.movies[int(character["movie_id"])]["title"],
-                   "gender" : character["gender"],
+                   "movie" : db.movie_by_id[character["movie_id"]],
+                   "gender" : gender,
                    "top_conversations" : sorted(top_conversations, key = 
                     lambda x: x["number_of_lines_together"], reverse = True)
            }
@@ -103,33 +108,29 @@ def list_characters(
     maximum number of results to return. The `offset` query parameter specifies the
     number of results to skip before returning results.
     """
+    if name != "":
+      temp = list(filter(lambda x: name.upper() in x["name"], db.characters))
+    else:
+      temp = db.characters
     character_list = []
-    filtered_movie = {}
-    filtered_lines = {}
-    temp = sorted(db.characters, key = lambda x: x["character_id"]) 
-    if (character_sort_options == character_sort_options.character):
+    if (sort == character_sort_options.character):
         temp = sorted(temp, key = lambda x: x["name"])
-    elif (character_sort_options == character_sort_options.movie):
+    elif (sort == character_sort_options.movie):
         temp = sorted(temp, key = lambda x: x["movie_id"])
     else:
-        temp = sorted(temp, key = lambda x: x["number_of_lines"])
+        temp = sorted(temp, key = lambda x: 
+          db.char_lines[x["character_id"]], reverse=True)
 
     sorted_characters = sorted(temp, key= lambda x: x["name"] == "")
     for i in range(offset, limit):
         if i < len(sorted_characters):
-          movie_id = int(sorted_characters[i]["movie_id"])
-          for movie in db.movies:
-            if (int(movie["movie_id"]) == movie_id):
-              filtered_movie = movie
-              break
-          filtered_lines = list(filter(lambda x: (x["character_id"]
-             == sorted_characters[i]["character_id"]), db.lines))
-
+          movie_id = sorted_characters[i]["movie_id"]
+          id = sorted_characters[i]["character_id"]
           character_json = { 
-            "character_id": int(sorted_characters[i]["character_id"]),
+            "character_id": int(id),
             "character" : sorted_characters[i]["name"],
-            "movie" : filtered_movie["title"],
-            "number_of_lines" : len(filtered_lines)}
+            "movie" : db.movie_by_id[movie_id],
+            "number_of_lines" : db.char_lines[id]}
           character_list.append(character_json)
     
     return character_list

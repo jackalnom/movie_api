@@ -30,33 +30,45 @@ with open("lines.csv", mode="r", encoding="utf8") as csv_file:
         for row in csv.DictReader(csv_file, skipinitialspace=True)
     ]
 
-    lines_by_character = []
+    character_by_id = dict()
+    gender_by_id = dict()
+    for character in characters:
+        key = str(character["character_id"])
+        gender = character["gender"]
+        character_by_id.__setitem__(key, character["name"])
+        if gender == "":
+            gender = None
+        gender_by_id.__setitem__(key, gender)
+
+    movie_by_id = {}
+    for movie in movies:
+        movie_by_id[movie["movie_id"]] = movie["title"]
+
+    char_lines = {}
+    for character in character_by_id:
+        char_lines[character] = 0
+
     for line in lines:
-        for character in lines_by_character:
-            if line["character_id"] == character["character_id"]:
-                character["character_id"] += 1
-            else:
-                for entry in characters:
-                    if entry["character_id"] == line["character_id"]:
-                        name = entry["name"]
-                    else:
-                        name = None
-                newCharacter = {
-                    "character_id" : line["character_id"],
-                    "name" : name,
-                    "num_lines" : 1,
-                    "movie_id" : line["movie_id"]
-                }
-                lines_by_character.append(newCharacter)
+        current_character = line["character_id"]
+        char_lines[current_character] = char_lines[current_character] + 1
+
+    lines_by_character = []
+    for character in characters:
+        name = character_by_id[character["character_id"]]
+        newCharacter = {
+            "character" : name,
+            "character_id" : int(character["character_id"]),
+            "num_lines" : int(char_lines[character["character_id"]]),
+            "movie_id" : character["movie_id"]
+        }
+        lines_by_character.append(newCharacter)
     lines_by_character.sort(reverse=True, key= lambda x: x["num_lines"])
     lines_by_character.sort(reverse=True, key= lambda x: x["movie_id"])
-    
-    top_chars_by_movie = []
+
+    top_chars_by_movie = {}
+    entry = []
     for movie in movies:
-        entry = { 
-            "movie_id": movie["movie_id"],
-            "top_chars" : filter(lambda x: x["movie_id"] 
-               == movie["movie_id"], lines_by_character)
-            }
-
-
+        entry = list(filter(lambda x: x["movie_id"] == movie["movie_id"],
+                            lines_by_character))
+        del entry[5:]
+        top_chars_by_movie[movie["movie_id"]] = entry
