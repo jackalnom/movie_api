@@ -26,7 +26,7 @@ def get_movie(movie_id: str):
     if movie_info is None:
         raise HTTPException(status_code=404, detail="Movie not found")
     
-    # Get the characters in the movie from the database
+    # get the characters in the movie from the database
     characters = {}
     for line in db.lines.values():
         if line["movie_id"] == movie_id:
@@ -36,38 +36,14 @@ def get_movie(movie_id: str):
             characters[character_id]["character_id"] = int(character_id)
             characters[character_id]["character"] = db.characters[character_id]["name"]
     characters = [characters[c] for c in sorted(characters, key=lambda c: characters[c]["num_lines"], reverse=True)][:5]
-    # for character in characters:
-    #     character.update(db.characters[character["character_id"]])
-    
-    # Assemble the movie information with the top characters
+
+    # assemble the movie information with the top characters
     result = {
         "movie_id": int(movie_id),
         "title": movie_info["title"],
         "top_characters": characters
     }
     return result
-
-def get_char_stats(id):
-    # find characters with given movie_id
-    stats = []
-    for char_id, char_data in db.characters.items():
-        if id not in char_data['movie_id'].lower():
-            continue 
-
-        # find num lines in the movie 
-        nlines = 0
-        for line_id, line_data in db.lines.items():
-            if (int(line_data['character_id']) == int(char_id)) and (id in line_data['movie_id'].lower()):
-                nlines += 1
-
-        stats.append({
-            'character_id': int(char_id),
-            'character': str(char_data['name']) or None,
-            'num_lines': nlines
-        })
-    # sort based on num_lines, from greatest to least 
-    stats = sorted(stats, key=lambda x: x['num_lines'], reverse=True)
-    return stats[:5]
 
 class movie_sort_options(str, Enum):
     movie_title = "movie_title"
