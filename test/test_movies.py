@@ -41,19 +41,19 @@ def test_404():
 
 # my tests
 def test_get_movie2():
-    response = client.get("/movies/44")
+    response = client.get("/movies/433")
     assert response.status_code == 200
 
-    with open("test/movies/44.json", encoding="utf-8") as f:
+    with open("test/movies/433.json", encoding="utf-8") as f:
         assert response.json() == json.load(f)
 
 
 def test_sort_filter2():
-    response = client.get("/movies/?name=big&limit=50&offset=0&sort=rating")
+    response = client.get("/movies/?name=ja&limit=2&offset=1&sort=year")
     assert response.status_code == 200
 
     with open(
-        "test/movies/movies-name=big&limit=50&offset=0&sort=rating.json",
+        "test/movies/movies-name=ja&limit=2&offset=1&sort=year.json",
         encoding="utf-8",
     ) as f:
         assert response.json() == json.load(f)
