@@ -22,19 +22,30 @@ def get_movie(movie_id: str):
     * `num_lines`: The number of lines the character has in the movie.
 
     """
-    # get movie
-    try:
-        movie = db.movies[movie_id]
-    except KeyError:
+    movie_info = db.movies.get(movie_id)
+    if movie_info is None:
         raise HTTPException(status_code=404, detail="Movie not found")
-
-    char_stats = get_char_stats(movie_id)
-
-    return {
-        'movie_id': int(movie_id),
-        'title': movie['title'] or None,
-        'top_characters': char_stats
+    
+    # Get the characters in the movie from the database
+    characters = {}
+    for line in db.lines.values():
+        if line["movie_id"] == movie_id:
+            character_id = line["character_id"]
+            characters[character_id] = characters.get(character_id, {"num_lines": 0})
+            characters[character_id]["num_lines"] += 1
+            characters[character_id]["character_id"] = int(character_id)
+            characters[character_id]["character"] = db.characters[character_id]["name"]
+    characters = [characters[c] for c in sorted(characters, key=lambda c: characters[c]["num_lines"], reverse=True)][:5]
+    # for character in characters:
+    #     character.update(db.characters[character["character_id"]])
+    
+    # Assemble the movie information with the top characters
+    result = {
+        "movie_id": int(movie_id),
+        "title": movie_info["title"],
+        "top_characters": characters
     }
+    return result
 
 def get_char_stats(id):
     # find characters with given movie_id
