@@ -58,6 +58,14 @@ for line in lines:
     else:
         character_lines[line["character_id"]] += 1
 
+# gets counts of lines of each conversation stored in a kvp(conversation_id, number_of_lines)
+conversation_lines = {}
+for line in lines:
+    if line["conversation_id"] not in conversation_lines:
+        conversation_lines[line["conversation_id"]] = 1
+    else:
+        conversation_lines[line["conversation_id"]] += 1
+
 with open("characters.csv", mode="r", encoding="utf8") as csv_file:
     csv_reader = csv.DictReader(csv_file)
     characters = []
