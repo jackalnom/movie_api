@@ -24,7 +24,17 @@ def get_line(line_id: int):
     Some type of sorting mechanic will be implemented here (probably by : character, length of line text)
     """
     json = None
-    return None
+    
+    for line in db.lines:
+        if line["line_id"] == line_id:
+            json = {
+                "line_id": line["line_id"],
+                "line_text": line["line_text"]
+            }
+
+    if json is None:
+        raise HTTPException(status_code=404, detail = "line not found")
+    return json
 
 @router.get("/lines/", tags=["lines"])
 def get_convo(line_id: int):
