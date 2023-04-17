@@ -1,5 +1,9 @@
 from fastapi import FastAPI
+<<<<<<< HEAD
 from src.api import characters, movies, pkg_util, lines
+=======
+from src.api import characters, movies, conversations, pkg_util
+>>>>>>> db993774e9cc922cd0a443a79a1314fde568e413
 
 description = """
 Movie API returns dialog statistics on top hollywood movies from decades past.
@@ -40,7 +44,11 @@ app = FastAPI(
 app.include_router(characters.router)
 app.include_router(movies.router)
 app.include_router(pkg_util.router)
+<<<<<<< HEAD
 app.include_router(lines.router)
+=======
+app.include_router(conversations.router)
+>>>>>>> db993774e9cc922cd0a443a79a1314fde568e413
 
 
 @app.get("/")
