@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from src import database as db
 from pydantic import BaseModel
 from typing import List
@@ -38,9 +38,15 @@ def add_conversation(movie_id: int, conversation: ConversationJson):
     The endpoint returns the id of the resulting conversation that was created.
     """
 
-    # TODO: Remove the following two lines. This is just a placeholder to show
-    # how you could implement persistent storage.
+    # ensure the characters in the request body are part of the referenced movie 
+    c1_id, c2_id = conversation.character_1_id, conversation.character_2_id
+    char1, char2 = db.characters.get(c1_id), db.characters.get(c2_id)
+    if not char1:
+        raise HTTPException(status_code=404, detail="character 1 not found.")
+    if not char2:
+        raise HTTPException(status_code=404, detail="character 2 not found.")
+    if (char1.movie_id != movie_id) or (char2.movie_id != movie_id):
+        raise HTTPException(status_code=404, detail="characters in request body are not part of referenced movie.")
+    
 
-    print(conversation)
-    db.logs.append({"post_call_time": datetime.now(), "movie_id_added_to": movie_id})
-    db.upload_new_log()
+    return
