@@ -133,3 +133,28 @@ for row in csv.DictReader(io.StringIO(lines_csv), skipinitialspace=True):
     conv = conversations.get(line.conv_id)
     if conv:
         conv.num_lines += 1
+
+
+
+# Writing to the conversations file and uploading to the supabase bucket
+def upload_new_conversation():
+    output = io.StringIO()
+    csv_writer = csv.DictWriter(
+        output, fieldnames=["conversation_id", "character1_id", "character2_id", "movie_id", "num_lines"]
+    )
+    csv_writer.writeheader()
+    for conversation_id, conversation_data in conversations.items():
+        row_data = {
+            "conversation_id": conversation_data.id,
+            "character1_id": conversation_data.c1_id,
+            "character2_id": conversation_data.c2_id,
+            "movie_id": conversation_data.movie_id,
+            "num_lines": conversation_data.num_lines
+        }
+        csv_writer.writerow(row_data)
+    supabase.storage.from_("movie-api").upload(
+        "conversations.csv",
+        bytes(output.getvalue(), "utf-8"),
+        {"x-upsert": "true"},
+    )
+
