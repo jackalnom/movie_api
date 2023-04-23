@@ -4,6 +4,8 @@ from src import datatypes as dt
 from pydantic import BaseModel
 from typing import List
 from datetime import datetime
+from random import randint
+
 
 
 # FastAPI is inferring what the request body should look like
@@ -59,28 +61,25 @@ def add_conversation(movie_id: int, conversation: ConversationJson):
         if (line.character_id != c1_id) and (line.character_id != c2_id):
             raise HTTPException(status_code=404, detail="a line referenced does not include either character in the conversation.")
 
-    # fake_convo = {
-    #     "conversation_id": 100000,
-    #     "character1_id": 0,
-    #     "character2_id": 1,
-    #     "movie_id": 0
-    # }
+    # create new conversation id 
+    new_convo_id = generate_new_number(db.conversations)
 
-
-    # create Conversation obj and append to locally stored version of
-    fake_convo = dt.Conversation(
-        100000,
-        0,
-        1,
-        0,
-        0
+    # create new Conversation obj and upload to db 
+    new_convo = dt.Conversation(
+        new_convo_id,
+        conversation.character_1_id,
+        conversation.character_1_id,
+        movie_id,
+        len(conversation.lines)
     )
-    db.conversations[100000] = fake_convo
-
-    print(fake_convo)
-    print(db.conversations[100000])
+    db.conversations[new_convo_id] = new_convo
     db.upload_new_conversation()
-    print("UPLOADED!")
 
-    
     return
+
+def generate_new_number(d):
+    while True:
+        rand_int = randint(0, 100000)
+        if rand_int not in d:
+            return rand_int
+        
