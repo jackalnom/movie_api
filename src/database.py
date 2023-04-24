@@ -158,3 +158,25 @@ def upload_new_conversation():
         {"x-upsert": "true"},
     )
 
+# Writing to the lines file and uploading to the supabase bucket
+def upload_new_line():
+    output = io.StringIO()
+    csv_writer = csv.DictWriter(
+        output, fieldnames=["line_id", "character_id", "movie_id", "conversation_id", "line_sort", "line_text"]
+    )
+    csv_writer.writeheader()
+    for line_id, line_data in lines.items():
+        row_data = {
+            "line_id": line_data.id,
+            "character_id": line_data.c_id,
+            "movie_id": line_data.movie_id,
+            "conversation_id": line_data.conv_id,
+            "line_sort": line_data.line_sort,
+            "line_text": line_data.line_text
+        }
+        csv_writer.writerow(row_data)
+    supabase.storage.from_("movie-api").upload(
+        "lines.csv",
+        bytes(output.getvalue(), "utf-8"),
+        {"x-upsert": "true"},
+    )

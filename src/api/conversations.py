@@ -55,16 +55,15 @@ def add_conversation(movie_id: int, conversation: ConversationJson):
     # characters are not the same 
     if char1 == char2:
         raise HTTPException(status_code=404, detail="the two characters in request body are the same.")
-    
+
     # lines match the characters involved 
     for line in conversation.lines:
         if (line.character_id != c1_id) and (line.character_id != c2_id):
             raise HTTPException(status_code=404, detail="a line referenced does not include either character in the conversation.")
+    
 
-    # create new conversation id 
+    # create new Conversation obj and upload
     new_convo_id = generate_new_number(db.conversations)
-
-    # create new Conversation obj and upload to db 
     new_convo = dt.Conversation(
         new_convo_id,
         conversation.character_1_id,
@@ -74,6 +73,22 @@ def add_conversation(movie_id: int, conversation: ConversationJson):
     )
     db.conversations[new_convo_id] = new_convo
     db.upload_new_conversation()
+
+    # create new Line objs and upload
+    line_sort = 0
+    for line in conversation.lines:
+        new_line_id = generate_new_number(db.lines)
+        new_line = dt.Line(
+            new_line_id,
+            line.character_id,
+            movie_id,
+            new_convo_id,
+            line_sort, 
+            line.line_text
+        )
+        db.lines[new_line_id] = new_line
+        db.upload_new_line()
+        line_sort += 1
 
     return
 
