@@ -90,7 +90,7 @@ def add_conversation(movie_id: int, conversation: ConversationJson):
         db.upload_new_line()
         line_sort += 1
 
-    return
+    return new_convo_id
 
 def generate_new_number(d):
     while True:
