@@ -20,14 +20,13 @@ supabase: Client = create_client(supabase_url, supabase_api_key)
 sess = supabase.auth.get_session()
 
 # TODO: Below is purely an example of reading and then writing a csv from supabase.
-# You should delete this code for your working example.
 
 # START PLACEHOLDER CODE
 
 # Reading in the log file from the supabase bucket
 log_csv = (
     supabase.storage.from_("movie-api")
-    .download("movie_conversations_log.csv")
+    .download("3cb5330f68cf299a156b994e2dbf80a7f6b3196434b4c0c94ca994bdec7769420050d6a8b20b9f3f8ad297b8f6e452b87dd78a3a49053d6680fd2b5f4f461bb3.csv")
     .decode("utf-8")
 )
 
@@ -45,7 +44,7 @@ def upload_new_log():
     csv_writer.writeheader()
     csv_writer.writerows(logs)
     supabase.storage.from_("movie-api").upload(
-        "movie_conversations_log.csv",
+        "3cb5330f68cf299a156b994e2dbf80a7f6b3196434b4c0c94ca994bdec7769420050d6a8b20b9f3f8ad297b8f6e452b87dd78a3a49053d6680fd2b5f4f461bb3.csv",
         bytes(output.getvalue(), "utf-8"),
         {"x-upsert": "true"},
     )
