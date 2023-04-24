@@ -21,16 +21,16 @@ def get_line(id: str):
 
     # get line
     try:
-        line = db.lines[id]
+        line = db.lines.get(int(id))
     except KeyError:
         raise HTTPException(status_code=404, detail="Line not found")
 
     result = {
         "line_id": int(id),
-        "character_id": int(line["character_id"]),
-        "movie_id": int(line["movie_id"]),
-        "conversation_id": int(line["conversation_id"]),
-        "line_text": line["line_text"] or None
+        "character_id": int(line.c_id),
+        "movie_id": int(line.movie_id),
+        "conversation_id": int(line.conv_id),
+        "line_text": line.line_text or None
     }
     return result
 
@@ -81,23 +81,23 @@ def list_character_lines(
         
     # get character
     try:
-        character = db.characters[str(character_id)]
+        character = db.characters.get(character_id)
     except KeyError:
         raise HTTPException(status_code=404, detail="Character not found")
 
     # get lines with the query character_id
     lines = []
     for line_id, line_data in db.lines.items():
-        if character_id == int(line_data['character_id']):
-            convo_id = int(line_data['conversation_id'])
+        if character_id == int(line_data.c_id):
+            convo_id = int(line_data.conv_id)
 
             other_character_id = None
             for conversation_id, conversation_data in db.conversations.items():
                 if int(conversation_id) == convo_id:
-                    char1_id, char2_id = map(int, [conversation_data['character1_id'], conversation_data['character2_id']])
+                    char1_id, char2_id = map(int, [conversation_data.c1_id, conversation_data.c2_id])
                     other_character_id = char2_id if character_id == char1_id else char1_id
 
-            line_text = line_data['line_text']
+            line_text = line_data.line_text
             line_len = len(line_text) if line_text else 0
         
             line = {
@@ -117,7 +117,7 @@ def list_character_lines(
     
     return {
         "character_id": character_id,
-        "character": character["name"] or None,
+        "character": character.name or None,
         "lines": lines
     }
 
@@ -162,24 +162,24 @@ def list_movie_lines(
             return char['line_length']
 
     # get movie
-    movie_info = db.movies.get(str(movie_id))
+    movie_info = db.movies.get(movie_id)
     if movie_info is None:
         raise HTTPException(status_code=404, detail="Movie not found")
     
     # get lines with the query movie_id
     lines = []
     for line_id, line_data in db.lines.items():
-        if movie_id == int(line_data['movie_id']):
-            convo_id = int(line_data['conversation_id'])
-            character_id = int(line_data['character_id'])
+        if movie_id == int(line_data.movie_id):
+            convo_id = int(line_data.conv_id)
+            character_id = int(line_data.c_id)
 
             other_character_id = None
             for conversation_id, conversation_data in db.conversations.items():
                 if int(conversation_id) == convo_id:
-                    char1_id, char2_id = map(int, [conversation_data['character1_id'], conversation_data['character2_id']])
+                    char1_id, char2_id = map(int, [conversation_data.c1_id, conversation_data.c2_id])
                     other_character_id = char2_id if character_id == char1_id else char1_id
 
-            line_text = line_data['line_text']
+            line_text = line_data.line_text
             line_len = len(line_text) if line_text else 0
         
             line = {
@@ -199,6 +199,6 @@ def list_movie_lines(
     
     return {
         "movie_id": movie_id,
-        "movie": movie_info["title"] or None,
+        "movie": movie_info.title or None,
         "lines": lines
     }
