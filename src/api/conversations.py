@@ -41,6 +41,17 @@ def add_conversation(movie_id: int, conversation: ConversationJson):
     The endpoint returns the id of the resulting conversation that was created.
     """
 
+    """
+    Areas where the code will not function
+    - multiple simultaneous calls to this endpoint 
+        - could add to conversations csv and lines csv on Supabase 
+            - possibly multiple instances of lines or conversations 
+            with the same primary id (if there is reentrancy)
+    - could fail to add the resource if there is a race condition with 
+      another endpoint call that affects the data required for this call to succeed 
+      (such as character data and line data)
+    """
+
     # --- ensure the request body
     # characters are part of the referenced movie 
     c1_id, c2_id = conversation.character_1_id, conversation.character_2_id
