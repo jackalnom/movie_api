@@ -1,7 +1,8 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from src import database as db
 from pydantic import BaseModel
 from typing import List
+from src.datatypes import Conversation, Line
 from datetime import datetime
 
 
@@ -37,10 +38,52 @@ def add_conversation(movie_id: int, conversation: ConversationJson):
 
     The endpoint returns the id of the resulting conversation that was created.
     """
-
-    # TODO: Remove the following two lines. This is just a placeholder to show
-    # how you could implement persistent storage.
-
-    print(conversation)
-    db.logs.append({"post_call_time": datetime.now(), "movie_id_added_to": movie_id})
-    db.upload_new_log()
+    try:
+        char1 = db.characters[conversation.character_1_id]
+        char2 = db.characters[conversation.character_2_id]
+    except KeyError:
+        raise HTTPException(status_code=422, detail="Validation Error: 1+ given char_ids are invalid")
+    if char1.movie_id != movie_id or char2.movie_id != movie_id:
+        raise HTTPException(status_code=422, detail="Validation Error: Invalid character for given movie")
+    if char1.id == char2.id:
+        raise HTTPException(status_code=422, detail="Validation Error: Both characters in conversation have same ID")
+    for line in conversation.lines:
+        if line.character_id != char1.id and line.character_id != char2.id:
+            raise HTTPException(status_code=422, detail="Validation Error: char_id of a line was not specified in the "
+                                                        "given conversation")
+    # Doing a second run through lines to assign IDs because I dont want incorrectly increment MaxID in db in the case
+    # that a line had Invalid Format. If I get here, all data is validated and I can add the lines and convo to the db
+    newConvoID = db.maxConvoID + 1
+    db.maxConvoID += 1
+    # adding to local database so it updates as soon as it's added
+    db.conversations[newConvoID] = Conversation(
+                                    newConvoID,
+                                    conversation.character_1_id,
+                                    conversation.character_2_id,
+                                    movie_id,
+                                    len(conversation.lines),
+                                )
+    # adding to supabase
+    db.convos.append({"conversation_id": newConvoID, "character1_id": conversation.character_1_id,
+                      "character2_id": conversation.character_2_id, "movie_id": movie_id})
+    db.upload_new_conversations()
+    # onto lines
+    newLineSort = 1
+    for line in conversation.lines:
+        # adding to local database so it updates as soon as it's added
+        newLineID = db.maxLineID + 1
+        db.maxLineID += 1
+        db.lines[newLineID] = Line(
+                                newLineID,
+                                line.character_id,
+                                movie_id,
+                                newConvoID,
+                                newLineSort,
+                                line.line_text,
+                            )
+        # adding to supabase
+        db.lin.append({"line_id": newLineID, "character_id": line.character_id, "movie_id": movie_id,
+                       "conversation_id": newConvoID, "line_sort": newLineSort, "line_text": line.line_text})
+        newLineSort += 1
+    db.upload_new_lines()
+    return newConvoID

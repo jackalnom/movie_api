@@ -21,36 +21,57 @@ sess = supabase.auth.get_session()
 
 # TODO: Below is purely an example of reading and then writing a csv from supabase.
 
-# START PLACEHOLDER CODE
-
 # Reading in the log file from the supabase bucket
-log_csv = (
+conversations_csv = (
     supabase.storage.from_("movie-api")
-    .download("3cb5330f68cf299a156b994e2dbf80a7f6b3196434b4c0c94ca994bdec7769420050d6a8b20b9f3f8ad297b8f6e452b87dd78a3a49053d6680fd2b5f4f461bb3.csv")
+    .download("conversations.csv")
     .decode("utf-8")
 )
 
-logs = []
-for row in csv.DictReader(io.StringIO(log_csv), skipinitialspace=True):
-    logs.append(row)
+convos = []
+for row in csv.DictReader(io.StringIO(conversations_csv), skipinitialspace=True):
+    convos.append(row)
 
 
 # Writing to the log file and uploading to the supabase bucket
-def upload_new_log():
+def upload_new_conversations():
     output = io.StringIO()
     csv_writer = csv.DictWriter(
-        output, fieldnames=["post_call_time", "movie_id_added_to"]
+        output, fieldnames=["conversation_id","character1_id","character2_id","movie_id"]
     )
     csv_writer.writeheader()
-    csv_writer.writerows(logs)
+    csv_writer.writerows(convos)
     supabase.storage.from_("movie-api").upload(
-        "3cb5330f68cf299a156b994e2dbf80a7f6b3196434b4c0c94ca994bdec7769420050d6a8b20b9f3f8ad297b8f6e452b87dd78a3a49053d6680fd2b5f4f461bb3.csv",
+        "conversations.csv",
         bytes(output.getvalue(), "utf-8"),
         {"x-upsert": "true"},
     )
 
+# Reading in the log file from the supabase bucket
+lines_csv = (
+    supabase.storage.from_("movie-api")
+    .download("lines.csv")
+    .decode("utf-8")
+)
 
-# END PLACEHOLDER CODE
+lin = []
+for row in csv.DictReader(io.StringIO(lines_csv), skipinitialspace=True):
+    lin.append(row)
+
+
+# Writing to the log file and uploading to the supabase bucket
+def upload_new_lines():
+    output = io.StringIO()
+    csv_writer = csv.DictWriter(
+        output, fieldnames=["line_id","character_id","movie_id","conversation_id","line_sort","line_text"]
+    )
+    csv_writer.writeheader()
+    csv_writer.writerows(lin)
+    supabase.storage.from_("movie-api").upload(
+        "lines.csv",
+        bytes(output.getvalue(), "utf-8"),
+        {"x-upsert": "true"},
+    )
 
 
 def try_parse(type, val):
@@ -87,10 +108,15 @@ with open("characters.csv", mode="r", encoding="utf8") as csv_file:
         characters[char.id] = char
 
 with open("conversations.csv", mode="r", encoding="utf8") as csv_file:
+    maxConvoID = 0
     conversations = {}
-    for row in csv.DictReader(csv_file, skipinitialspace=True):
+    for row in csv.DictReader(io.StringIO(conversations_csv), skipinitialspace=True):
+        currConvoID = try_parse(int, row["conversation_id"])
+        if currConvoID is not None:
+            if currConvoID > maxConvoID:
+                maxConvoID = currConvoID
         conv = Conversation(
-            try_parse(int, row["conversation_id"]),
+            currConvoID,
             try_parse(int, row["character1_id"]),
             try_parse(int, row["character2_id"]),
             try_parse(int, row["movie_id"]),
@@ -99,10 +125,15 @@ with open("conversations.csv", mode="r", encoding="utf8") as csv_file:
         conversations[conv.id] = conv
 
 with open("lines.csv", mode="r", encoding="utf8") as csv_file:
+    maxLineID = 0
     lines = {}
-    for row in csv.DictReader(csv_file, skipinitialspace=True):
+    for row in csv.DictReader(io.StringIO(lines_csv), skipinitialspace=True):
+        currLineID = try_parse(int, row["line_id"])
+        if currLineID is not None:
+            if currLineID > maxLineID:
+                maxLineID = currLineID
         line = Line(
-            try_parse(int, row["line_id"]),
+            currLineID,
             try_parse(int, row["character_id"]),
             try_parse(int, row["movie_id"]),
             try_parse(int, row["conversation_id"]),
