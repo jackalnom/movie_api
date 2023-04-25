@@ -1,0 +1,11 @@
+{
+    "movie_id": "young frankenstein",
+    "character1_name": "MAITRE D'",
+    "character2_name": "MONSTER",
+    "conversation": [
+        "MONSTER : Foooooood!",
+        "MAITRE D' : Now just one moment. There's no need for roughhousing. Have you ever tried a tip?",
+        "MONSTER : GRRRHMMNNNJKJMMMNN!",
+        "MAITRE D' : Franz! Help! Lunatic!"
+    ]
+}
