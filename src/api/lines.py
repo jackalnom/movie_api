@@ -20,7 +20,6 @@ def get_line(line_id: int):
 
     if line_id in db.lines:
         tmp = db.lines[line_id]
-        #print(tmp)
         json = {
             "line_id": line_id,
             "movie_title": db.movies[tmp.movie_id].title,
@@ -95,9 +94,9 @@ def get_line_convo(convo_id: int):
     if convo_id in db.conversations:
         tmp = db.conversations[convo_id]
         json = {
-            "movie_id": db.movies[tmp.movie_id].title,
-            "character1_name": db.characters[tmp.c1_id].name,
-            "character2_name": db.characters[tmp.c2_id].name
+            "movie_id": db.movies[tmp["movie_id"]].title,
+            "character1_name": db.characters[tmp["character1_id"]].name,
+            "character2_name": db.characters[tmp["character2_id"]].name
         }
 
         conversation = []

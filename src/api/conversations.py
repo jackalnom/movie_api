@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from src import database as db
+from src.datatypes import Line
 from pydantic import BaseModel
 from typing import List
 from datetime import datetime
@@ -20,6 +21,18 @@ class ConversationJson(BaseModel):
 
 router = APIRouter()
 
+def check_json(movie_id : int, conversation : ConversationJson):
+    if db.characters[conversation.character_1_id].movie_id != movie_id:
+        return False
+    if db.characters[conversation.character_2_id].movie_id != movie_id:
+        return False
+    if conversation.character_1_id == conversation.character_2_id:
+        return False
+    for line in conversation.lines:
+        if (line.character_id != conversation.character_1_id and
+        line.character_id != conversation.character_2_id):
+            return False
+    return True
 
 @router.post("/movies/{movie_id}/conversations/", tags=["movies"])
 def add_conversation(movie_id: int, conversation: ConversationJson):
@@ -41,6 +54,32 @@ def add_conversation(movie_id: int, conversation: ConversationJson):
     # TODO: Remove the following two lines. This is just a placeholder to show
     # how you could implement persistent storage.
 
-    print(conversation)
-    db.logs.append({"post_call_time": datetime.now(), "movie_id_added_to": movie_id})
-    db.upload_new_log()
+    if check_json(movie_id, conversation):
+        print("valid conversation!")
+    
+    convo_id = max(db.conversations.keys()) + 1
+    line_id = max(db.lines.keys()) + 1
+
+    i = 0
+    while i < len(conversation.lines):
+        line = Line(
+            id = line_id + i,
+            c_id = conversation.lines[i].character_id,
+            movie_id = movie_id,
+            conv_id = convo_id,
+            line_sort = i + 1,
+            line_text = conversation.lines[i].line_text       
+        )
+        db.lines[line_id + i] = line
+        i += 1
+        
+    json = {
+        "conversation_id" : convo_id,
+        "character1_id" : conversation.character_1_id,
+        "character2_id" : conversation.character_2_id,
+        "movie_id" : movie_id
+    }
+
+    db.conversations[convo_id] = json
+    #db.logs.append({"post_call_time": datetime.now(), "movie_id_added_to": movie_id})
+    #db.upload_new_log()
