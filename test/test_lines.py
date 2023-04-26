@@ -29,5 +29,5 @@ def test_movie_lines():
     response = client.get("/movie_lines/?movie_id=13&limit=20")
     assert response.status_code == 200
 
-    with open("test/lines/movie_id=13&limit=20.json", encoding="utf-8") as f:
+    with open("test/lines/response_1682498446357.json", encoding="utf-8") as f:
         assert response.json() == json.load(f)

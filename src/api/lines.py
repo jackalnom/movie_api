@@ -14,6 +14,7 @@ def get_line(id: str):
        `/lines/{line_id}` endpoint. 
     * `character_id`: the internal id of the character. Can be used to query the
       `/characters/{character_id}` endpoint.
+    * `character_name`: the name of the character who gives the line. 
     * `movie_id`: the internal id of the movie.
     * `conversation_id`: the internal id of the conversation
     * `line_text`: the text of the line 
@@ -24,10 +25,20 @@ def get_line(id: str):
         line = db.lines.get(int(id))
     except KeyError:
         raise HTTPException(status_code=404, detail="Line not found")
+    
+    if line is None:
+        raise HTTPException(status_code=404, detail="Line not found")
+    
+    # get character
+    try:
+        character = db.characters.get(int(line.c_id))
+    except KeyError:
+        raise HTTPException(status_code=404, detail="Character not found")
 
     result = {
         "line_id": int(id),
         "character_id": int(line.c_id),
+        "character_name": character.name or None, 
         "movie_id": int(line.movie_id),
         "conversation_id": int(line.conv_id),
         "line_text": line.line_text or None
@@ -99,11 +110,17 @@ def list_character_lines(
 
             line_text = line_data.line_text
             line_len = len(line_text) if line_text else 0
+
+            try:
+                other_character_name = db.characters.get(other_character_id)
+            except KeyError:
+                raise HTTPException(status_code=404, detail="Character not found")
         
             line = {
                 'line_id': int(line_id),
                 'conversation_id': convo_id,
                 'other_character_id': other_character_id,
+                'other_character_name': other_character_name.name or None,
                 'line_text': line_text or None,
                 'line_length': line_len
             }
@@ -181,11 +198,17 @@ def list_movie_lines(
 
             line_text = line_data.line_text
             line_len = len(line_text) if line_text else 0
+
+            try:
+                other_character_name = db.characters.get(other_character_id)
+            except KeyError:
+                raise HTTPException(status_code=404, detail="Character not found")
         
             line = {
                 'line_id': int(line_id),
                 'conversation_id': convo_id,
                 'other_character_id': other_character_id,
+                'other_character_name': other_character_name.name or None,
                 'line_text': line_text or None,
                 'line_length': line_len
             }

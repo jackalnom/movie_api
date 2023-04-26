@@ -1,1 +1,86 @@
-{"character_id":327,"character":"BATEMAN","lines":[{"line_id":36554,"conversation_id":2586,"other_character_id":342,"line_text":"You'll notice that my friends and I all look and behave in a remarkably similar fashion but there are subtle differences between us. McDermott is the biggest asshole. Van Patten is the yes man. Price is the most wired. I'm the best looking. We all have light tans. Right now I'm in a bad mood because this is not a good table and Van Patten keeps asking dumb obvious questions about how to dress .","line_length":397},{"line_id":36562,"conversation_id":2610,"other_character_id":341,"line_text":"Van Patten looks puffy. Has he stopped working out?","line_length":51},{"line_id":36567,"conversation_id":2611,"other_character_id":341,"line_text":"That's not Paul Owen. Paul Owen's on the other side of the room. Over there.","line_length":76},{"line_id":36584,"conversation_id":2612,"other_character_id":341,"line_text":"I'm not sure guy but I don't think dyslexia is a virus.","line_length":55},{"line_id":36588,"conversation_id":2613,"other_character_id":341,"line_text":"Maybe it's just the light.","line_length":26},{"line_id":36590,"conversation_id":2613,"other_character_id":341,"line_text":"What?","line_length":5},{"line_id":36592,"conversation_id":2614,"other_character_id":341,"line_text":"It's definitely weak but I have a feeling if we do enough of it we'll be okay.","line_length":78},{"line_id":36596,"conversation_id":2615,"other_character_id":341,"line_text":"Calm down. Let's do it anyway","line_length":29},{"line_id":36612,"conversation_id":2628,"other_character_id":336,"line_text":"Aerobics class. Sorry. Any messages?","line_length":36},{"line_id":36614,"conversation_id":2628,"other_character_id":336,"line_text":"I occasionally box with Ricky at the Harvard Club. Anyone else?","line_length":63}]}
+{
+    "character_id": 327,
+    "character": "BATEMAN",
+    "lines": [
+      {
+        "line_id": 36554,
+        "conversation_id": 2586,
+        "other_character_id": 342,
+        "other_character_name": "VAN PATTEN",
+        "line_text": "You'll notice that my friends and I all look and behave in a remarkably similar fashion but there are subtle differences between us. McDermott is the biggest asshole. Van Patten is the yes man. Price is the most wired. I'm the best looking. We all have light tans. Right now I'm in a bad mood because this is not a good table and Van Patten keeps asking dumb obvious questions about how to dress .",
+        "line_length": 397
+      },
+      {
+        "line_id": 36562,
+        "conversation_id": 2610,
+        "other_character_id": 341,
+        "other_character_name": "PRICE",
+        "line_text": "Van Patten looks puffy. Has he stopped working out?",
+        "line_length": 51
+      },
+      {
+        "line_id": 36567,
+        "conversation_id": 2611,
+        "other_character_id": 341,
+        "other_character_name": "PRICE",
+        "line_text": "That's not Paul Owen. Paul Owen's on the other side of the room. Over there.",
+        "line_length": 76
+      },
+      {
+        "line_id": 36584,
+        "conversation_id": 2612,
+        "other_character_id": 341,
+        "other_character_name": "PRICE",
+        "line_text": "I'm not sure guy but I don't think dyslexia is a virus.",
+        "line_length": 55
+      },
+      {
+        "line_id": 36588,
+        "conversation_id": 2613,
+        "other_character_id": 341,
+        "other_character_name": "PRICE",
+        "line_text": "Maybe it's just the light.",
+        "line_length": 26
+      },
+      {
+        "line_id": 36590,
+        "conversation_id": 2613,
+        "other_character_id": 341,
+        "other_character_name": "PRICE",
+        "line_text": "What?",
+        "line_length": 5
+      },
+      {
+        "line_id": 36592,
+        "conversation_id": 2614,
+        "other_character_id": 341,
+        "other_character_name": "PRICE",
+        "line_text": "It's definitely weak but I have a feeling if we do enough of it we'll be okay.",
+        "line_length": 78
+      },
+      {
+        "line_id": 36596,
+        "conversation_id": 2615,
+        "other_character_id": 341,
+        "other_character_name": "PRICE",
+        "line_text": "Calm down. Let's do it anyway",
+        "line_length": 29
+      },
+      {
+        "line_id": 36612,
+        "conversation_id": 2628,
+        "other_character_id": 336,
+        "other_character_name": "JEAN",
+        "line_text": "Aerobics class. Sorry. Any messages?",
+        "line_length": 36
+      },
+      {
+        "line_id": 36614,
+        "conversation_id": 2628,
+        "other_character_id": 336,
+        "other_character_name": "JEAN",
+        "line_text": "I occasionally box with Ricky at the Harvard Club. Anyone else?",
+        "line_length": 63
+      }
+    ]
+  }
