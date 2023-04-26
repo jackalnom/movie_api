@@ -68,6 +68,7 @@ def list_character_lines(
     Each object in lines contains 
     * `line_id`: the internal id of the line.
     * `conversation_id`: the internal id of the conversation
+    * `other_character_name`: the name of the other character in the conversation
     * `other_character_id`: the internal id of the other character in the conversation
     * `line_text`: the text of the line 
 
@@ -156,6 +157,9 @@ def list_movie_lines(
     Each object in lines contains 
     * `line_id`: the internal id of the line.
     * `conversation_id`: the internal id of the conversation
+    * `character_id`: the internal id of the character who gives the line.
+    * `character_name`: the name of the character who gives the line.
+    * `other_character_name`: the name of the other character in the conversation
     * `other_character_id`: the internal id of the other character in the conversation
     * `line_text`: the text of the line 
 
@@ -203,10 +207,16 @@ def list_movie_lines(
                 other_character_name = db.characters.get(other_character_id)
             except KeyError:
                 raise HTTPException(status_code=404, detail="Character not found")
+            try:
+                character_name = db.characters.get(character_id)
+            except KeyError:
+                raise HTTPException(status_code=404, detail="Character not found")
         
             line = {
                 'line_id': int(line_id),
                 'conversation_id': convo_id,
+                'character_id': character_id,
+                'character_name': character_name.name or None,
                 'other_character_id': other_character_id,
                 'other_character_name': other_character_name.name or None,
                 'line_text': line_text or None,
