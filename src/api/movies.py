@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from enum import Enum
 from src import database as db
 from fastapi.params import Query
+import sqlalchemy
 
 router = APIRouter()
 
@@ -78,39 +79,6 @@ def list_movies(
     maximum number of results to return. The `offset` query parameter specifies the
     number of results to skip before returning results.
     """
-    if name:
-
-        def filter_fn(m):
-            return m.title and name.lower() in m.title
-
-    else:
-
-        def filter_fn(_):
-            return True
-
-    items = list(filter(filter_fn, db.movies.values()))
-    if sort == movie_sort_options.movie_title:
-        items.sort(key=lambda m: m.title)
-    elif sort == movie_sort_options.year:
-        items.sort(key=lambda m: m.year)
-    elif sort == movie_sort_options.rating:
-        items.sort(key=lambda m: m.imdb_rating, reverse=True)
-
-    json = (
-        {
-            "movie_id": m.id,
-            "movie_title": m.title,
-            "year": m.year,
-            "imdb_rating": m.imdb_rating,
-            "imdb_votes": m.imdb_votes,
-        }
-        for m in items[offset : offset + limit]
-    )
-
-    return json
-
-    """
-    from lecture link
     if sort is movie_sort_options.movie_title:
         order_by = db.movies.c.title
     elif sort is movie_sort_options.year:
@@ -139,8 +107,13 @@ def list_movies(
 
     with db.engine.connect() as conn:
         result = conn.execute(stmt)
+        print('result:')
+        print(result)
+        print(result.fetchall())
         json = []
-        for row in result:
+        for row in result.fetchall():
+            print('row:')
+            print(row)
             json.append(
                 {
                     "movie_id": row.movie_id,
@@ -152,4 +125,3 @@ def list_movies(
             )
 
     return json
-    """
