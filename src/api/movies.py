@@ -24,25 +24,49 @@ def get_movie(movie_id: int):
 
     """
 
-    movie = db.movies.get(movie_id)
-    if movie:
-        top_chars = [
-            {"character_id": c.id, "character": c.name, "num_lines": c.num_lines}
-            for c in db.characters.values()
-            if c.movie_id == movie_id
-        ]
-        top_chars.sort(key=lambda c: c["num_lines"], reverse=True)
+    stmt_a = (
+        sqlalchemy.select(
+            db.movies.c.movie_id,
+            db.movies.c.title
+        ).where(db.movies.c.movie_id == movie_id)
+    )
 
-        result = {
-            "movie_id": movie_id,
-            "title": movie.title,
-            "top_characters": top_chars[0:5],
+    stmt_b = sqlalchemy.select(
+            db.lines.c.character_id,
+            sqlalchemy.func.count().label('num_lines'),
+            db.characters.c.name.label('character')
+        ).join(db.characters, db.lines.c.character_id == db.characters.c.character_id) \
+        .where(db.lines.c.movie_id == movie_id) \
+        .group_by(db.lines.c.character_id, db.characters.c.name) \
+        .order_by(sqlalchemy.desc('num_lines')) \
+        .limit(5)
+
+    # Execute the query and format the result as a dictionary
+    with db.engine.connect() as conn:
+        res_a = conn.execute(stmt_a).fetchone()
+        res_b = conn.execute(stmt_b)
+
+        print(res_a)
+        print(res_a.movie_id)
+        
+        json = {
+            "movie_id": res_a.movie_id,
+            "title": res_a.title
         }
-        return result
 
-    raise HTTPException(status_code=404, detail="movie not found.")
+        top_characters = []
+        for row in res_b.fetchall():
+            top_characters.append(
+                {
+                    "character_id": row.character_id,
+                    "num_lines": row.num_lines,
+                    "character": row.character
+                }
+            )
+        json["top_characters"] = top_characters
 
-
+        return json
+    
 class movie_sort_options(str, Enum):
     movie_title = "movie_title"
     year = "year"
@@ -107,13 +131,8 @@ def list_movies(
 
     with db.engine.connect() as conn:
         result = conn.execute(stmt)
-        print('result:')
-        print(result)
-        print(result.fetchall())
         json = []
         for row in result.fetchall():
-            print('row:')
-            print(row)
             json.append(
                 {
                     "movie_id": row.movie_id,
