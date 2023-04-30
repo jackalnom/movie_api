@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from enum import Enum
 from collections import Counter
-
+import sqlalchemy
 from fastapi.params import Query
 from src import database as db
 
@@ -106,35 +106,47 @@ def list_characters(
     number of results to skip before returning results.
     """
 
-    if name:
+    stmt = sqlalchemy.select(
+            db.characters.c.character_id,
+            db.characters.c.name.label('character'),
+            db.movies.c.title.label('movie'),
+            sqlalchemy.func.count(db.lines.c.line_id).label('number_of_lines')
+        ).join(db.movies, db.characters.c.movie_id == db.movies.c.movie_id) \
+        .join(db.lines, db.characters.c.character_id == db.lines.c.character_id) \
+        .where(db.characters.c.name.like(f"%{name}%")) \
+        .group_by(
+            db.characters.c.character_id,
+            db.characters.c.name,
+            db.movies.c.title
+        ).order_by(sqlalchemy.desc('number_of_lines')) \
+        .limit(limit) \
+        .offset(offset)
+        
+    
 
-        def filter_fn(c):
-            return c.name and name.upper() in c.name
+    """
+    .order_by(
+            sqlalchemy.case(
+                (sort == 'character', db.characters.c.name),
+                (sort == 'movie', db.movies.c.title),
+                else_=sqlalchemy.func.count(db.lines.c.line_id)
+            ).desc()
+        )
+    errors b/c trying to sort by various types 
+    """
+    
 
-    else:
+    with db.engine.connect() as conn:
+        result = conn.execute(stmt)
+        json = []
+        for row in result.fetchall():
+            json.append(
+                {
+                    "character_id": row.character_id,
+                    "character": row.character,
+                    "movie": row.movie,
+                    "number_of_lines": row.number_of_lines,
+                }
+            )
 
-        def filter_fn(_):
-            return True
-
-    items = list(filter(filter_fn, db.characters.values()))
-
-    def none_last(x, reverse=False):
-        return (x is None) ^ reverse, x
-
-    if sort == character_sort_options.character:
-        items.sort(key=lambda c: none_last(c.name))
-    elif sort == character_sort_options.movie:
-        items.sort(key=lambda c: none_last(db.movies[c.movie_id].title))
-    elif sort == character_sort_options.number_of_lines:
-        items.sort(key=lambda c: none_last(c.num_lines, True), reverse=True)
-
-    json = (
-        {
-            "character_id": c.id,
-            "character": c.name,
-            "movie": db.movies[c.movie_id].title,
-            "number_of_lines": c.num_lines,
-        }
-        for c in items[offset : offset + limit]
-    )
     return json
