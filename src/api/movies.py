@@ -44,15 +44,15 @@ def get_movie(movie_id: int):
     # Execute the query and format the result as a dictionary
     with db.engine.connect() as conn:
         res_a = conn.execute(stmt_a).fetchone()
-        res_b = conn.execute(stmt_b)
+        if res_a is None:
+            raise HTTPException(status_code=404, detail="movie not found.")
 
-        print(res_a)
-        print(res_a.movie_id)
-        
         json = {
             "movie_id": res_a.movie_id,
             "title": res_a.title
         }
+
+        res_b = conn.execute(stmt_b)
 
         top_characters = []
         for row in res_b.fetchall():
