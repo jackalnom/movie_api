@@ -8,23 +8,6 @@ from src import database as db
 router = APIRouter()
 
 
-def get_top_conv_characters(character):
-    c_id = character.id
-    movie_id = character.movie_id
-    all_convs = filter(
-        lambda conv: conv.movie_id == movie_id
-        and (conv.c1_id == c_id or conv.c2_id == c_id),
-        db.conversations.values(),
-    )
-    line_counts = Counter()
-
-    for conv in all_convs:
-        other_id = conv.c2_id if conv.c1_id == c_id else conv.c1_id
-        line_counts[other_id] += conv.num_lines
-
-    return line_counts.most_common()
-
-
 @router.get("/characters/{id}", tags=["characters"])
 def get_character(id: int):
     """
@@ -47,28 +30,81 @@ def get_character(id: int):
       originally queried character.
     """
 
-    character = db.characters.get(id)
+    with db.engine.connect() as conn:
+        result_a = conn.execute(
+            sqlalchemy.text("""
+            SELECT
+                characters.character_id,
+                characters.name AS character,
+                movies.title AS movie,
+                characters.gender
+            FROM characters
+            JOIN movies ON characters.movie_id = movies.movie_id
+            WHERE characters.character_id = :x
+            """), [{"x": id}]
+        ).fetchone()
 
-    if character:
-        movie = db.movies.get(character.movie_id)
-        result = {
-            "character_id": character.id,
-            "character": character.name,
-            "movie": movie and movie.title,
-            "gender": character.gender,
-            "top_conversations": (
-                {
-                    "character_id": other_id,
-                    "character": db.characters[other_id].name,
-                    "gender": db.characters[other_id].gender,
-                    "number_of_lines_together": lines,
-                }
-                for other_id, lines in get_top_conv_characters(character)
-            ),
+        if result_a is None:
+            raise HTTPException(status_code=404, detail="character not found.")
+
+
+        result_b = conn.execute(
+            sqlalchemy.text("""
+            SELECT 
+                (CASE
+                    WHEN characters.character_id IN (conversations.character1_id) THEN conversations.character2_id
+                    WHEN characters.character_id IN (conversations.character2_id) THEN conversations.character1_id
+                END) AS other_char_id,
+            SUM(CASE 
+                WHEN conversations.character1_id = characters.character_id THEN conversations.num_lines 
+                WHEN conversations.character2_id = characters.character_id THEN conversations.num_lines 
+                ELSE 0 
+            END) AS number_of_lines_together,
+            (CASE
+                WHEN characters.character_id IN (conversations.character1_id) THEN 
+                (SELECT characters.name FROM characters WHERE characters.character_id = conversations.character2_id)
+                WHEN characters.character_id IN (conversations.character2_id) THEN 
+                (SELECT characters.name FROM characters WHERE characters.character_id = conversations.character1_id)
+            END) AS character,
+            (CASE
+                WHEN characters.character_id IN (conversations.character1_id) THEN 
+                (SELECT characters.gender FROM characters WHERE characters.character_id = conversations.character2_id)
+                WHEN characters.character_id IN (conversations.character2_id) THEN 
+                (SELECT characters.gender FROM characters WHERE characters.character_id = conversations.character1_id)
+            END) AS gender
+            FROM 
+                characters 
+                JOIN conversations ON characters.character_id IN (conversations.character1_id, conversations.character2_id) 
+                JOIN movies ON conversations.movie_id = movies.movie_id 
+            WHERE 
+                characters.character_id = :x
+            GROUP BY 
+                characters.character_id,
+                conversations.character1_id,
+                conversations.character2_id
+            ORDER BY 
+                number_of_lines_together DESC 
+            """), 
+            [{"x": id}]
+        )
+        top_convs = []
+        for row in result_b.fetchall():
+            top_convs.append({
+                "character_id": row.other_char_id,
+                "character": row.character,
+                "gender": row.gender,
+                "number_of_lines_together": row.number_of_lines_together
+            })
+
+        json = {
+            "character_id": result_a.character_id,
+            "character": result_a.character,
+            "movie": result_a.movie,
+            "gender": result_a.gender,
+            "top_conversations": top_convs
         }
-        return result
 
-    raise HTTPException(status_code=404, detail="character not found.")
+    return json
 
 
 class character_sort_options(str, Enum):
