@@ -106,6 +106,56 @@ def list_characters(
     number of results to skip before returning results.
     """
 
+    with db.engine.connect() as conn:
+        result = conn.execute(
+            sqlalchemy.text("""
+            SELECT 
+                characters.character_id, 
+                characters.name AS character, 
+                movies.title AS movie, 
+                COUNT(lines.line_id) AS number_of_lines 
+            FROM 
+                characters
+                JOIN movies ON characters.movie_id = movies.movie_id 
+                JOIN lines ON characters.character_id = lines.character_id 
+            WHERE
+                characters.name LIKE :x
+            GROUP by
+                characters.character_id, 
+                characters.name, 
+                movies.title 
+            ORDER by  
+                CASE
+                    WHEN :sort = 'character' THEN characters.name
+                END ASC,
+                CASE
+                    WHEN :sort = 'movie' THEN movies.title
+                END ASC,
+                CASE
+                    WHEN :sort NOT IN ('character', 'movie') THEN COUNT(lines.line_id)
+                END DESC
+            LIMIT :y
+            OFFSET :z
+            """),
+            [{"x": "%" + name.upper() + "%",
+              "y": limit,
+              "z": offset,
+              "sort": sort}]
+        )
+        json = []
+        for row in result.fetchall():
+            print(row)
+            json.append(
+                {
+                    "character_id": row.character_id,
+                    "character": row.character,
+                    "movie": row.movie,
+                    "number_of_lines": row.number_of_lines,
+                }
+            )
+        return json
+
+    """
     stmt = sqlalchemy.select(
             db.characters.c.character_id,
             db.characters.c.name.label('character'),
@@ -113,29 +163,20 @@ def list_characters(
             sqlalchemy.func.count(db.lines.c.line_id).label('number_of_lines')
         ).join(db.movies, db.characters.c.movie_id == db.movies.c.movie_id) \
         .join(db.lines, db.characters.c.character_id == db.lines.c.character_id) \
-        .where(db.characters.c.name.like(f"%{name}%")) \
+        .where(db.characters.c.name.like(f"%{name.upper()}%")) \
         .group_by(
             db.characters.c.character_id,
             db.characters.c.name,
             db.movies.c.title
-        ).order_by(sqlalchemy.desc('number_of_lines')) \
+        ).order_by(
+            sqlalchemy.case(
+                (sort == 'character', sqlalchemy.cast(db.characters.c.name, sqlalchemy.Text)),
+                (sort == 'movie', sqlalchemy.cast(db.movies.c.title, sqlalchemy.Text)),
+                else_=sqlalchemy.cast(sqlalchemy.func.count(db.lines.c.line_id), sqlalchemy.Text)
+            ).desc()) \
         .limit(limit) \
         .offset(offset)
-        
     
-
-    """
-    .order_by(
-            sqlalchemy.case(
-                (sort == 'character', db.characters.c.name),
-                (sort == 'movie', db.movies.c.title),
-                else_=sqlalchemy.func.count(db.lines.c.line_id)
-            ).desc()
-        )
-    errors b/c trying to sort by various types 
-    """
-    
-
     with db.engine.connect() as conn:
         result = conn.execute(stmt)
         json = []
@@ -150,3 +191,4 @@ def list_characters(
             )
 
     return json
+    """

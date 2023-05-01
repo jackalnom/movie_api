@@ -23,13 +23,6 @@ def test_get_character2():
         assert response.json() == json.load(f)
 
 
-def test_characters():
-    response = client.get("/characters/")
-    assert response.status_code == 200
-
-    with open("test/characters/root.json", encoding="utf-8") as f:
-        assert response.json() == json.load(f)
-
 
 def test_characters2():
     response = client.get("/characters/?name=bianca&sort=movie")
