@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from enum import Enum
 from src import database as db
 from collections import Counter
+import sqlalchemy
 
 router = APIRouter()
 
@@ -20,30 +21,35 @@ def get_line(id: str):
     * `line_text`: the text of the line 
     """
 
-    # get line
-    try:
-        line = db.lines.get(int(id))
-    except KeyError:
-        raise HTTPException(status_code=404, detail="Line not found")
-    
-    if line is None:
-        raise HTTPException(status_code=404, detail="Line not found")
-    
-    # get character
-    try:
-        character = db.characters.get(int(line.c_id))
-    except KeyError:
-        raise HTTPException(status_code=404, detail="Character not found")
+    with db.engine.connect() as conn:
+        res = conn.execute(
+            sqlalchemy.text("""
+            SELECT 
+                lines.line_id, 
+                lines.character_id, 
+                characters.name AS character_name, 
+                lines.movie_id, 
+                lines.conversation_id, 
+                lines.line_text
+            FROM 
+                lines 
+                JOIN characters ON lines.character_id = characters.character_id
+            WHERE 
+                lines.line_id = :x
+            """), [{"x": int(id)}]
+        ).fetchone()    
 
-    result = {
-        "line_id": int(id),
-        "character_id": int(line.c_id),
-        "character_name": character.name or None, 
-        "movie_id": int(line.movie_id),
-        "conversation_id": int(line.conv_id),
-        "line_text": line.line_text or None
+        if res is None:
+            raise HTTPException(status_code=404, detail="line not found.")
+
+    return {
+        "line_id": res.line_id,
+        "character_id": res.character_id,
+        "character_name": res.character_name,
+        "movie_id": res.movie_id,
+        "conversation_id": res.conversation_id,
+        "line_text": res.line_text
     }
-    return result
 
 
 class line_sort_options(str, Enum):
