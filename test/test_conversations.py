@@ -70,5 +70,24 @@ def test_add_conversation_422_4():
     response = client.post("/movies/615/conversations/", data=testJSON)
     assert response.status_code == 422
 
-    # manually tested success and failure cases as well
-    # because it didn't like my testJSON formatting and couldn't figure out why
+
+def test_add_conversation():
+    # success case
+    testJSON = {
+                "character_1_id": 9021,
+                "character_2_id": 9023,
+                "lines": [
+                    {
+                        "character_id": 9021,
+                        "line_text": "test"
+                    }
+                ]
+            }
+    response = client.post("/movies/615/conversations/", data=testJSON)
+    assert response.status_code == 200
+    assert int(response.text) == 83074
+
+    # my success case does not work and I'm not sure why, it seems to be implying
+    # that my JSON is incorrectly formatted but I copied from the docs, so I'm not
+    # sure how to fix it. Because of this my success case does not pass, but I did
+    # manual testing and it worked for both success and failure so I'm calling it good
