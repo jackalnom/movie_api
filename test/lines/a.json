@@ -1,0 +1,56 @@
+{
+    "character_id": 0,
+    "character": "BIANCA",
+    "lines": [
+      {
+        "line_id": 1051,
+        "conversation_id": 55,
+        "line_text": "Patrick -- is that- a."
+      },
+      {
+        "line_id": 1045,
+        "conversation_id": 24,
+        "line_text": "They do not!"
+      },
+      {
+        "line_id": 1021,
+        "conversation_id": 54,
+        "line_text": "Is that woman a complete fruit-loop or is it just me?"
+      },
+      {
+        "line_id": 1011,
+        "conversation_id": 53,
+        "line_text": "No! I just wanted"
+      },
+      {
+        "line_id": 1009,
+        "conversation_id": 53,
+        "line_text": "I just wanted --"
+      },
+      {
+        "line_id": 1007,
+        "conversation_id": 53,
+        "line_text": "Let go!"
+      },
+      {
+        "line_id": 985,
+        "conversation_id": 23,
+        "line_text": "I hope so."
+      },
+      {
+        "line_id": 982,
+        "conversation_id": 52,
+        "line_text": "You looked beautiful last night you know."
+      },
+      {
+        "line_id": 953,
+        "conversation_id": 31,
+        "line_text": "I did."
+      },
+      {
+        "line_id": 925,
+        "conversation_id": 22,
+        "line_text": "Let's go."
+      }
+    ]
+  }

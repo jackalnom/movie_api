@@ -19,10 +19,10 @@ def test_404():
     assert response.status_code == 404
 
 def test_list_character_lines():
-    response = client.get("/lines/?character_id=327&limit=10")
+    response = client.get("/lines/?character_id=0&limit=10")
     assert response.status_code == 200
 
-    with open("test/lines/character_id=327&limit=10.json", encoding="utf-8") as f:
+    with open("test/lines/a.json", encoding="utf-8") as f:
         assert response.json() == json.load(f)
 
 def test_movie_lines():
