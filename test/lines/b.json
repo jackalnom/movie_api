@@ -1,0 +1,76 @@
+{
+    "movie_id": 0,
+    "movie": "10 things i hate about you",
+    "lines": [
+      {
+        "line_id": 1052,
+        "conversation_id": 0,
+        "character_id": 0,
+        "character_name": "BIANCA",
+        "line_text": "Perm?"
+      },
+      {
+        "line_id": 1052,
+        "conversation_id": 1,
+        "character_id": 0,
+        "character_name": "BIANCA",
+        "line_text": "Perm?"
+      },
+      {
+        "line_id": 1052,
+        "conversation_id": 2,
+        "character_id": 0,
+        "character_name": "BIANCA",
+        "line_text": "Perm?"
+      },
+      {
+        "line_id": 1052,
+        "conversation_id": 3,
+        "character_id": 0,
+        "character_name": "BIANCA",
+        "line_text": "Perm?"
+      },
+      {
+        "line_id": 1052,
+        "conversation_id": 4,
+        "character_id": 0,
+        "character_name": "BIANCA",
+        "line_text": "Perm?"
+      },
+      {
+        "line_id": 1052,
+        "conversation_id": 5,
+        "character_id": 0,
+        "character_name": "BIANCA",
+        "line_text": "Perm?"
+      },
+      {
+        "line_id": 1052,
+        "conversation_id": 6,
+        "character_id": 0,
+        "character_name": "BIANCA",
+        "line_text": "Perm?"
+      },
+      {
+        "line_id": 1052,
+        "conversation_id": 7,
+        "character_id": 0,
+        "character_name": "BIANCA",
+        "line_text": "Perm?"
+      },
+      {
+        "line_id": 1052,
+        "conversation_id": 8,
+        "character_id": 0,
+        "character_name": "BIANCA",
+        "line_text": "Perm?"
+      },
+      {
+        "line_id": 1052,
+        "conversation_id": 9,
+        "character_id": 0,
+        "character_name": "BIANCA",
+        "line_text": "Perm?"
+      }
+    ]
+  }

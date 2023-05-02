@@ -47,7 +47,6 @@ def get_character(id: int):
         if result_a is None:
             raise HTTPException(status_code=404, detail="character not found.")
 
-
         result_b = conn.execute(
             sqlalchemy.text("""
             SELECT 
