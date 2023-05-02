@@ -3,8 +3,7 @@ from src import database as db
 from src import datatypes as dt
 from pydantic import BaseModel
 from typing import List
-from datetime import datetime
-from random import randint
+import sqlalchemy
 
 
 
@@ -52,60 +51,79 @@ def add_conversation(movie_id: int, conversation: ConversationJson):
       (such as character data and line data)
     """
 
-    # --- ensure the request body
-    # characters are part of the referenced movie 
-    c1_id, c2_id = conversation.character_1_id, conversation.character_2_id
-    char1, char2 = db.characters.get(c1_id), db.characters.get(c2_id)
-    if not char1:
-        raise HTTPException(status_code=404, detail="character 1 not found.")
-    if not char2:
-        raise HTTPException(status_code=404, detail="character 2 not found.")
-    if (char1.movie_id != movie_id) or (char2.movie_id != movie_id):
-        raise HTTPException(status_code=404, detail="characters in request body are not part of referenced movie.")
+    with db.engine.connect() as conn:
+        char1 = conn.execute(
+            sqlalchemy.text("""SELECT * FROM characters WHERE characters.character_id = :x"""), 
+            [{"x": conversation.character_1_id}]
+        ).fetchone()  
 
-    # characters are not the same 
-    if char1 == char2:
-        raise HTTPException(status_code=404, detail="the two characters in request body are the same.")
+        char2 = conn.execute(
+            sqlalchemy.text("""SELECT * FROM characters WHERE characters.character_id = :x"""), 
+            [{"x": conversation.character_2_id}]
+        ).fetchone()    
 
-    # lines match the characters involved 
-    for line in conversation.lines:
-        if (line.character_id != c1_id) and (line.character_id != c2_id):
-            raise HTTPException(status_code=404, detail="a line referenced does not include either character in the conversation.")
+        # --- ensure the request body
+        # characters are part of the referenced movie 
+        if not char1:
+            raise HTTPException(status_code=404, detail="character 1 not found.")
+        if not char2:
+            raise HTTPException(status_code=404, detail="character 2 not found.")
+        if (char1.movie_id != movie_id) or (char2.movie_id != movie_id):
+            raise HTTPException(status_code=404, detail="characters in request body are not part of referenced movie.")
     
+        # characters are not the same 
+        if char1 == char2:
+            raise HTTPException(status_code=404, detail="the two characters in request body are the same.")
 
-    # create new Conversation obj and upload
-    new_convo_id = generate_new_number(db.conversations)
-    new_convo = dt.Conversation(
-        new_convo_id,
-        conversation.character_1_id,
-        conversation.character_1_id,
-        movie_id,
-        len(conversation.lines)
-    )
-    db.conversations[new_convo_id] = new_convo
-    db.upload_new_conversation()
+        # lines match the characters involved 
+        for line in conversation.lines:
+            if (line.character_id != char1.character_id) and (line.character_id != char2.character_id):
+                raise HTTPException(status_code=404, detail="a line referenced does not include either character in the conversation.")
 
-    # create new Line objs and upload
-    line_sort = 0
-    for line in conversation.lines:
-        new_line_id = generate_new_number(db.lines)
-        new_line = dt.Line(
-            new_line_id,
-            line.character_id,
-            movie_id,
-            new_convo_id,
-            line_sort, 
-            line.line_text
-        )
-        db.lines[new_line_id] = new_line
-        db.upload_new_line()
-        line_sort += 1
+        new_conv_id = conn.execute(
+            sqlalchemy.text("""
+            SELECT conversations.conversation_id
+            FROM conversations
+            ORDER BY conversation_id DESC
+            LIMIT 1 
+            """)
+        ).fetchone().conversation_id + 1
 
-    return new_convo_id
-
-def generate_new_number(d):
-    while True:
-        rand_int = randint(0, 100000)
-        if rand_int not in d:
-            return rand_int
+        new_convo = {
+            "conversation_id": new_conv_id,
+            "character1_id": char1.character_id,
+            "character2_id": char2.character_id,
+            "movie_id": movie_id
+        }
+            
+        conn.execute(db.conversations.insert().values(**new_convo))
         
+
+        new_line_id = conn.execute(
+            sqlalchemy.text("""
+            SELECT lines.line_id
+            FROM lines
+            ORDER BY line_id DESC
+            LIMIT 1 
+            """)
+        ).fetchone().line_id + 1
+
+        # create new Line objs and upload
+        line_sort = 0
+        for line in conversation.lines:
+            new_line = {
+                "line_id": new_line_id,
+                "character_id": conversation.character_1_id,
+                "movie_id": movie_id,
+                "conversation_id": line.character_id,
+                "line_sort": line_sort,
+                "line_text": line.line_text
+            }
+            new_line_id += 1
+            line_sort += 1
+            conn.execute(db.lines.insert().values(**new_line))
+
+        conn.commit()
+
+        return new_conv_id
+    
