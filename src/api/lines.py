@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from src import database as db
+import sqlalchemy
 
 router = APIRouter()
 
@@ -16,20 +17,29 @@ def get_line(line_id: int):
     * `character` : the character that spoke the line
     * `line_text` : the line spoken
     """
-    json = None
 
-    if line_id in db.lines:
-        tmp = db.lines[line_id]
-        json = {
-            "line_id": line_id,
-            "movie_title": db.movies[tmp.movie_id].title,
-            "character": db.characters[tmp.c_id].name,
-            "line_text" : tmp.line_text
-        }
+    conn = db.engine.connect()
 
-    if json is None:
+    stmnt = (sqlalchemy.text("""
+        SELECT lines.line_id, movies.title AS movie_title, characters.name AS character, lines.line_text
+        FROM lines
+        JOIN movies ON lines.movie_id = movies.movie_id
+        JOIN characters ON lines.character_id = characters.character_id
+        WHERE lines.line_id = :line_id
+        """))
+
+    result = conn.execute(stmnt, {"line_id" : line_id}).fetchone()
+
+    if result is None:
         raise HTTPException(status_code=404, detail = "line not found")
-    return json
+    
+    line = {
+        "line_id": result[0],
+            "movie_title": result[1],
+            "character": result[2],
+            "line_text": result[3]
+    }
+    return line
 
 @router.get("/character_lines/", tags=["lines"])
 def get_character_and_movie(
