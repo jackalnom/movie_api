@@ -1,0 +1,20 @@
+{
+    "character_id": 1001,
+    "character": "PETE",
+    "movie": "from dusk till dawn",
+    "gender": null,
+    "top_conversations": [
+        {
+            "character_id": 1000,
+            "character": "MCGRAW",
+            "gender": null,
+            "number_of_lines_together": 17
+        },
+        {
+            "character_id": 1005,
+            "character": "SETH",
+            "gender": "M",
+            "number_of_lines_together": 11
+        }
+    ]
+}

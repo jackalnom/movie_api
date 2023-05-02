@@ -4,5 +4,7 @@
         "test"
     ],
     "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
+    "python.testing.pytestEnabled": true,
+    "vercel-vscode.access_token": "jFj5TGBo5jSDJvAGZo7Kej4l",
+    "vercel-vscode.project": "prj_QGdFYDFDNAszJ1xOWXnYcFF9YJ2D"
 }

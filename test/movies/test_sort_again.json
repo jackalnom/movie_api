@@ -1,0 +1,352 @@
+[
+    {
+        "movie_id": 568,
+        "movie_title": "the sting",
+        "year": "1973",
+        "imdb_rating": 8.4,
+        "imdb_votes": 67231
+    },
+    {
+        "movie_id": 615,
+        "movie_title": "young frankenstein",
+        "year": "1974",
+        "imdb_rating": 8,
+        "imdb_votes": 57618
+    },
+    {
+        "movie_id": 108,
+        "movie_title": "jaws",
+        "year": "1975",
+        "imdb_rating": 8.3,
+        "imdb_votes": 140982
+    },
+    {
+        "movie_id": 463,
+        "movie_title": "one flew over the cuckoo's nest",
+        "year": "1975",
+        "imdb_rating": 8.9,
+        "imdb_votes": 219739
+    },
+    {
+        "movie_id": 490,
+        "movie_title": "the rocky horror picture show",
+        "year": "1975",
+        "imdb_rating": 7.1,
+        "imdb_votes": 42713
+    },
+    {
+        "movie_id": 239,
+        "movie_title": "all the president's men",
+        "year": "1976",
+        "imdb_rating": 8,
+        "imdb_votes": 32717
+    },
+    {
+        "movie_id": 529,
+        "movie_title": "star wars",
+        "year": "1977",
+        "imdb_rating": 8.8,
+        "imdb_votes": 326619
+    },
+    {
+        "movie_id": 544,
+        "movie_title": "superman",
+        "year": "1978",
+        "imdb_rating": 7.3,
+        "imdb_votes": 51172
+    },
+    {
+        "movie_id": 247,
+        "movie_title": "apocalypse now",
+        "year": "1979",
+        "imdb_rating": 8.6,
+        "imdb_votes": 176465
+    },
+    {
+        "movie_id": 514,
+        "movie_title": "the shining",
+        "year": "1980",
+        "imdb_rating": 8.5,
+        "imdb_votes": 182077
+    },
+    {
+        "movie_id": 59,
+        "movie_title": "fast times at ridgemont high",
+        "year": "1982",
+        "imdb_rating": 7.2,
+        "imdb_votes": 31710
+    },
+    {
+        "movie_id": 193,
+        "movie_title": "star trek: the wrath of khan",
+        "year": "1982",
+        "imdb_rating": 7.8,
+        "imdb_votes": 36503
+    },
+    {
+        "movie_id": 489,
+        "movie_title": "star wars: episode vi - return of the jedi",
+        "year": "1983",
+        "imdb_rating": 8.3,
+        "imdb_votes": 215058
+    },
+    {
+        "movie_id": 16,
+        "movie_title": "amadeus",
+        "year": "1984",
+        "imdb_rating": 8.4,
+        "imdb_votes": 99138
+    },
+    {
+        "movie_id": 99,
+        "movie_title": "indiana jones and the temple of doom",
+        "year": "1984",
+        "imdb_rating": 7.5,
+        "imdb_votes": 112054
+    },
+    {
+        "movie_id": 148,
+        "movie_title": "a nightmare on elm street",
+        "year": "1984",
+        "imdb_rating": 7.4,
+        "imdb_votes": 47161
+    },
+    {
+        "movie_id": 351,
+        "movie_title": "rambo: first blood part ii",
+        "year": "1985",
+        "imdb_rating": 5.8,
+        "imdb_votes": 39147
+    },
+    {
+        "movie_id": 609,
+        "movie_title": "witness",
+        "year": "1985",
+        "imdb_rating": 7.6,
+        "imdb_votes": 30705
+    },
+    {
+        "movie_id": 15,
+        "movie_title": "aliens",
+        "year": "1986",
+        "imdb_rating": 8.5,
+        "imdb_votes": 173518
+    },
+    {
+        "movie_id": 212,
+        "movie_title": "the lost boys",
+        "year": "1987",
+        "imdb_rating": 7,
+        "imdb_votes": 34826
+    },
+    {
+        "movie_id": 480,
+        "movie_title": "the princess bride",
+        "year": "1987",
+        "imdb_rating": 8.1,
+        "imdb_votes": 125281
+    },
+    {
+        "movie_id": 599,
+        "movie_title": "wall street",
+        "year": "1987",
+        "imdb_rating": 7.3,
+        "imdb_votes": 39082
+    },
+    {
+        "movie_id": 297,
+        "movie_title": "nuovo cinema paradiso",
+        "year": "1988",
+        "imdb_rating": 8.5,
+        "imdb_votes": 46801
+    },
+    {
+        "movie_id": 74,
+        "movie_title": "ghostbusters ii",
+        "year": "1989",
+        "imdb_rating": 6.1,
+        "imdb_votes": 45450
+    },
+    {
+        "movie_id": 98,
+        "movie_title": "indiana jones and the last crusade",
+        "year": "1989",
+        "imdb_rating": 8.3,
+        "imdb_votes": 174947
+    },
+    {
+        "movie_id": 232,
+        "movie_title": "the abyss",
+        "year": "1989",
+        "imdb_rating": 7.6,
+        "imdb_votes": 51699
+    },
+    {
+        "movie_id": 318,
+        "movie_title": "dead poets society",
+        "year": "1989",
+        "imdb_rating": 7.8,
+        "imdb_votes": 90842
+    },
+    {
+        "movie_id": 222,
+        "movie_title": "tremors",
+        "year": "1990",
+        "imdb_rating": 7.1,
+        "imdb_votes": 30553
+    },
+    {
+        "movie_id": 372,
+        "movie_title": "goodfellas",
+        "year": "1990",
+        "imdb_rating": 8.8,
+        "imdb_votes": 234582
+    },
+    {
+        "movie_id": 441,
+        "movie_title": "misery",
+        "year": "1990",
+        "imdb_rating": 7.8,
+        "imdb_votes": 41563
+    },
+    {
+        "movie_id": 216,
+        "movie_title": "thelma & louise",
+        "year": "1991",
+        "imdb_rating": 7.3,
+        "imdb_votes": 44372
+    },
+    {
+        "movie_id": 419,
+        "movie_title": "the silence of the lambs",
+        "year": "1991",
+        "imdb_rating": 8.7,
+        "imdb_votes": 251237
+    },
+    {
+        "movie_id": 170,
+        "movie_title": "reservoir dogs",
+        "year": "1992",
+        "imdb_rating": 8.4,
+        "imdb_votes": 217185
+    },
+    {
+        "movie_id": 257,
+        "movie_title": "basic instinct",
+        "year": "1992",
+        "imdb_rating": 6.9,
+        "imdb_votes": 57615
+    },
+    {
+        "movie_id": 259,
+        "movie_title": "batman returns",
+        "year": "1992",
+        "imdb_rating": 6.9,
+        "imdb_votes": 79770
+    },
+    {
+        "movie_id": 368,
+        "movie_title": "glengarry glen ross",
+        "year": "1992",
+        "imdb_rating": 7.9,
+        "imdb_votes": 32882
+    },
+    {
+        "movie_id": 411,
+        "movie_title": "jurassic park",
+        "year": "1993",
+        "imdb_rating": 7.9,
+        "imdb_votes": 153737
+    },
+    {
+        "movie_id": 459,
+        "movie_title": "the nightmare before christmas",
+        "year": "1993",
+        "imdb_rating": 8,
+        "imdb_votes": 81753
+    },
+    {
+        "movie_id": 499,
+        "movie_title": "sleepless in seattle",
+        "year": "1993",
+        "imdb_rating": 6.6,
+        "imdb_votes": 44179
+    },
+    {
+        "movie_id": 504,
+        "movie_title": "schindler's list",
+        "year": "1993",
+        "imdb_rating": 8.9,
+        "imdb_votes": 282473
+    },
+    {
+        "movie_id": 576,
+        "movie_title": "tombstone",
+        "year": "1993",
+        "imdb_rating": 7.7,
+        "imdb_votes": 44204
+    },
+    {
+        "movie_id": 299,
+        "movie_title": "clerks.",
+        "year": "1994",
+        "imdb_rating": 8,
+        "imdb_votes": 90972
+    },
+    {
+        "movie_id": 395,
+        "movie_title": "the hudsucker proxy",
+        "year": "1994",
+        "imdb_rating": 7.4,
+        "imdb_votes": 32691
+    },
+    {
+        "movie_id": 399,
+        "movie_title": "interview with the vampire: the vampire chronicles",
+        "year": "1994",
+        "imdb_rating": 7.4,
+        "imdb_votes": 80077
+    },
+    {
+        "movie_id": 454,
+        "movie_title": "natural born killers",
+        "year": "1994",
+        "imdb_rating": 7.1,
+        "imdb_votes": 73047
+    },
+    {
+        "movie_id": 585,
+        "movie_title": "true lies",
+        "year": "1994",
+        "imdb_rating": 7.2,
+        "imdb_votes": 81801
+    },
+    {
+        "movie_id": 70,
+        "movie_title": "get shorty",
+        "year": "1995",
+        "imdb_rating": 6.9,
+        "imdb_votes": 33588
+    },
+    {
+        "movie_id": 116,
+        "movie_title": "leaving las vegas",
+        "year": "1995",
+        "imdb_rating": 7.6,
+        "imdb_votes": 42919
+    },
+    {
+        "movie_id": 289,
+        "movie_title": "casino",
+        "year": "1995",
+        "imdb_rating": 8.1,
+        "imdb_votes": 111223
+    },
+    {
+        "movie_id": 579,
+        "movie_title": "toy story",
+        "year": "1995",
+        "imdb_rating": 8.2,
+        "imdb_votes": 156231
+    }
+]

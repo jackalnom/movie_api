@@ -2,10 +2,15 @@ from fastapi import APIRouter, HTTPException
 from enum import Enum
 from src import database as db
 from fastapi.params import Query
+from sqlalchemy import create_engine
+import os
+import dotenv
+import sqlalchemy
 
 router = APIRouter()
 
 
+# include top 5 actors by number of lines ???
 @router.get("/movies/{movie_id}", tags=["movies"])
 def get_movie(movie_id: int):
     """
@@ -78,33 +83,68 @@ def list_movies(
     maximum number of results to return. The `offset` query parameter specifies the
     number of results to skip before returning results.
     """
-    if name:
+    stmnt0 = (sqlalchemy.text("""
+    SELECT movies.movie_id, movies.title AS movie_title, movies.year, movies.imdb_rating, movies.imdb_votes
+    FROM movies
+    WHERE movies.title LIKE :name
+    ORDER BY movie_title
+    LIMIT :limit
+    OFFSET :offset
+    """))
 
-        def filter_fn(m):
-            return m.title and name.lower() in m.title
+    stmnt1 = (sqlalchemy.text("""
+    SELECT movies.movie_id, movies.title AS movie_title, movies.year, movies.imdb_rating, movies.imdb_votes
+    FROM movies
+    WHERE movies.title LIKE :name
+    ORDER BY movies.year
+    LIMIT :limit
+    OFFSET :offset
+    """))
 
+    stmnt2 = (sqlalchemy.text("""
+    SELECT movies.movie_id, movies.title AS movie_title, movies.year, movies.imdb_rating, movies.imdb_votes
+    FROM movies
+    WHERE movies.title LIKE :name
+    ORDER BY movies.imdb_rating desc
+    LIMIT :limit
+    OFFSET :offset
+    """))
+
+    conn = db.engine.connect()
+
+    curr_statement = ""
+
+    print(sort.value)
+
+    if sort.value == "movie_title":
+       curr_statement = stmnt0
+    elif sort.value == "year":
+       curr_statement = stmnt1
     else:
+       curr_statement = stmnt2
 
-        def filter_fn(_):
-            return True
+    params = {
+        "name": f"%{name}%",
+        "limit": limit,
+        "offset": offset
+    }
 
-    items = list(filter(filter_fn, db.movies.values()))
-    if sort == movie_sort_options.movie_title:
-        items.sort(key=lambda m: m.title)
-    elif sort == movie_sort_options.year:
-        items.sort(key=lambda m: m.year)
-    elif sort == movie_sort_options.rating:
-        items.sort(key=lambda m: m.imdb_rating, reverse=True)
+    result = conn.execute(curr_statement, params).fetchall()
 
-    json = (
-        {
-            "movie_id": m.id,
-            "movie_title": m.title,
-            "year": m.year,
-            "imdb_rating": m.imdb_rating,
-            "imdb_votes": m.imdb_votes,
-        }
-        for m in items[offset : offset + limit]
-    )
+    if len(result) == 0:
+      raise HTTPException(status_code=404, detail="no movies found")
+    
 
-    return json
+    movies = []
+    for row in result:
+       movie = {
+          "movie_id": row[0],
+          "movie_title": row[1],
+          "year": row[2],
+          "imdb_rating": row[3],
+          "imdb_votes": row[4]
+       }
+       movies.append(movie)
+
+    return movies
+

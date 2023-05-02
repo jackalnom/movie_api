@@ -1,0 +1,302 @@
+[
+    {
+        "character_id": 3581,
+        "character": "FAUST",
+        "movie": "alien",
+        "number_of_lines": 47
+    },
+    {
+        "character_id": 3582,
+        "character": "HUNTER",
+        "movie": "alien",
+        "number_of_lines": 81
+    },
+    {
+        "character_id": 3585,
+        "character": "STANDARD",
+        "movie": "alien",
+        "number_of_lines": 224
+    },
+    {
+        "character_id": 235,
+        "character": "MED-TECH",
+        "movie": "aliens",
+        "number_of_lines": 4
+    },
+    {
+        "character_id": 236,
+        "character": "NEWT",
+        "movie": "aliens",
+        "number_of_lines": 31
+    },
+    {
+        "character_id": 3609,
+        "character": "OPERATOR'S VOICE",
+        "movie": "all about eve",
+        "number_of_lines": 4
+    },
+    {
+        "character_id": 3610,
+        "character": "PIANIST",
+        "movie": "all about eve",
+        "number_of_lines": 4
+    },
+    {
+        "character_id": 3611,
+        "character": "BERNSTEIN",
+        "movie": "all the president's men",
+        "number_of_lines": 190
+    },
+    {
+        "character_id": 3618,
+        "character": "DEEP THROAT",
+        "movie": "all the president's men",
+        "number_of_lines": 29
+    },
+    {
+        "character_id": 3619,
+        "character": "FOREIGN EDITOR",
+        "movie": "all the president's men",
+        "number_of_lines": 5
+    },
+    {
+        "character_id": 3621,
+        "character": "HUNT",
+        "movie": "all the president's men",
+        "number_of_lines": 3
+    },
+    {
+        "character_id": 3626,
+        "character": "MITCHELL",
+        "movie": "all the president's men",
+        "number_of_lines": 9
+    },
+    {
+        "character_id": 3628,
+        "character": "NATIONAL EDITOR",
+        "movie": "all the president's men",
+        "number_of_lines": 4
+    },
+    {
+        "character_id": 3630,
+        "character": "SECRETARY",
+        "movie": "all the president's men",
+        "number_of_lines": 9
+    },
+    {
+        "character_id": 3631,
+        "character": "SEGRETTI",
+        "movie": "all the president's men",
+        "number_of_lines": 14
+    },
+    {
+        "character_id": 3634,
+        "character": "SWEET OLD LADY",
+        "movie": "all the president's men",
+        "number_of_lines": 3
+    },
+    {
+        "character_id": 242,
+        "character": "ANDANTE",
+        "movie": "amadeus",
+        "number_of_lines": 3
+    },
+    {
+        "character_id": 246,
+        "character": "COMMENDATORE",
+        "movie": "amadeus",
+        "number_of_lines": 4
+    },
+    {
+        "character_id": 247,
+        "character": "CONSTANZE",
+        "movie": "amadeus",
+        "number_of_lines": 106
+    },
+    {
+        "character_id": 248,
+        "character": "FIRST LADY",
+        "movie": "amadeus",
+        "number_of_lines": 5
+    },
+    {
+        "character_id": 255,
+        "character": "MOZART",
+        "movie": "amadeus",
+        "number_of_lines": 298
+    },
+    {
+        "character_id": 264,
+        "character": "SERVANT",
+        "movie": "amadeus",
+        "number_of_lines": 4
+    },
+    {
+        "character_id": 267,
+        "character": "VON STRACK",
+        "movie": "amadeus",
+        "number_of_lines": 20
+    },
+    {
+        "character_id": 268,
+        "character": "VON SWIETEN",
+        "movie": "amadeus",
+        "number_of_lines": 9
+    },
+    {
+        "character_id": 3636,
+        "character": "CHOIR TEACHER",
+        "movie": "american pie",
+        "number_of_lines": 4
+    },
+    {
+        "character_id": 3640,
+        "character": "HEATHER",
+        "movie": "american pie",
+        "number_of_lines": 46
+    },
+    {
+        "character_id": 3645,
+        "character": "KEVIN'S BROTHER",
+        "movie": "american pie",
+        "number_of_lines": 12
+    },
+    {
+        "character_id": 3652,
+        "character": "STIFLER",
+        "movie": "american pie",
+        "number_of_lines": 26
+    },
+    {
+        "character_id": 3653,
+        "character": "STIFLER'S MOM",
+        "movie": "american pie",
+        "number_of_lines": 8
+    },
+    {
+        "character_id": 327,
+        "character": "BATEMAN",
+        "movie": "american psycho",
+        "number_of_lines": 339
+    },
+    {
+        "character_id": 329,
+        "character": "CARRUTHERS",
+        "movie": "american psycho",
+        "number_of_lines": 8
+    },
+    {
+        "character_id": 330,
+        "character": "CHRISTIE",
+        "movie": "american psycho",
+        "number_of_lines": 9
+    },
+    {
+        "character_id": 331,
+        "character": "COURTNEY",
+        "movie": "american psycho",
+        "number_of_lines": 39
+    },
+    {
+        "character_id": 333,
+        "character": "ELIZABETH",
+        "movie": "american psycho",
+        "number_of_lines": 15
+    },
+    {
+        "character_id": 338,
+        "character": "MAITRE D'",
+        "movie": "american psycho",
+        "number_of_lines": 6
+    },
+    {
+        "character_id": 342,
+        "character": "VAN PATTEN",
+        "movie": "american psycho",
+        "number_of_lines": 12
+    },
+    {
+        "character_id": 343,
+        "character": "VICTORIA",
+        "movie": "american psycho",
+        "number_of_lines": 8
+    },
+    {
+        "character_id": 3676,
+        "character": "1ST MAN",
+        "movie": "annie hall",
+        "number_of_lines": 17
+    },
+    {
+        "character_id": 3678,
+        "character": "ACTOR",
+        "movie": "annie hall",
+        "number_of_lines": 4
+    },
+    {
+        "character_id": 3679,
+        "character": "ACTRESS",
+        "movie": "annie hall",
+        "number_of_lines": 4
+    },
+    {
+        "character_id": 3682,
+        "character": "ALVY'S FATHER",
+        "movie": "annie hall",
+        "number_of_lines": 8
+    },
+    {
+        "character_id": 3683,
+        "character": "ALVY'S MOTHER",
+        "movie": "annie hall",
+        "number_of_lines": 6
+    },
+    {
+        "character_id": 3690,
+        "character": "GIRL DATE",
+        "movie": "annie hall",
+        "number_of_lines": 4
+    },
+    {
+        "character_id": 3694,
+        "character": "REPORTER",
+        "movie": "annie hall",
+        "number_of_lines": 11
+    },
+    {
+        "character_id": 3697,
+        "character": "TEACHER",
+        "movie": "annie hall",
+        "number_of_lines": 4
+    },
+    {
+        "character_id": 3698,
+        "character": "TESSIE",
+        "movie": "annie hall",
+        "number_of_lines": 3
+    },
+    {
+        "character_id": 3699,
+        "character": "TONY",
+        "movie": "annie hall",
+        "number_of_lines": 26
+    },
+    {
+        "character_id": 3716,
+        "character": "AZTECA",
+        "movie": "antz",
+        "number_of_lines": 14
+    },
+    {
+        "character_id": 3718,
+        "character": "BARBATUS",
+        "movie": "antz",
+        "number_of_lines": 13
+    },
+    {
+        "character_id": 3719,
+        "character": "CARPENTER",
+        "movie": "antz",
+        "number_of_lines": 8
+    }
+]

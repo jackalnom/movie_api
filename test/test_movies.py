@@ -58,3 +58,23 @@ def test_sort_filter2():
 def test_404():
     response = client.get("/movies/1")
     assert response.status_code == 404
+
+
+# my additional tests
+
+def test_get_movie_0():
+    response = client.get("/movies/0")
+    assert response.status_code == 200
+
+    with open("test/movies/0.json", encoding="utf-8") as f:
+        assert response.json() == json.load(f)
+
+def test_sort_filter_again():
+    response = client.get("/movies/?name=s&limit=50&offset=12&sort=year")
+    assert response.status_code == 200
+
+    with open(
+        "test/movies/test_sort_again.json",
+        encoding="utf-8",
+    ) as f:
+        assert response.json() == json.load(f)
